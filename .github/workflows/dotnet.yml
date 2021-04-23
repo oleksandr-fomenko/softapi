@@ -17,9 +17,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
+    - name: Debug
+      run: ls -a
     - name: Restore dependencies
-      run: dotnet restore ./SoftAPI/SoftAPIClient.csproj
+      run: dotnet restore SoftAPI/SoftAPIClient.csproj
     - name: Build
-      run: dotnet build ./SoftAPI/SoftAPIClient.csproj --no-restore
+      run: dotnet build SoftAPI/SoftAPIClient.csproj --no-restore
     - name: Test
-      run: dotnet test ./SoftAPI/SoftAPIClient.csproj --no-build --verbosity normal
+      run: dotnet test SoftAPI/SoftAPIClient.csproj --no-build --verbosity normal
