@@ -12,6 +12,12 @@
     <Description>A type-safe REST library</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>HttpClient,WebApi</PackageTags>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>0</WarningLevel>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
