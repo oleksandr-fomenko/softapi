@@ -1,11 +1,12 @@
 ﻿using SoftAPIClient.Core.Interfaces;
+using SoftAPIClient.MetaData;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SoftAPIClient.Core.Auth
 {
-    public class AuthBasic64 : IAuthentication
+    public class AuthBasic64 : IDynamicParameter
     {
         private string UserName { get; }
         private string Password { get; }
@@ -15,7 +16,12 @@ namespace SoftAPIClient.Core.Auth
             Password = password;
         }
 
-        public KeyValuePair<string, string> GetHeader()
+        public AttributeType GetAttributeType()
+        {
+            return AttributeType.Header;
+        }
+
+        public KeyValuePair<string, string> GetValue()
         {
             string key = "Authorization";
             string value = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(UserName + ":" + Password));

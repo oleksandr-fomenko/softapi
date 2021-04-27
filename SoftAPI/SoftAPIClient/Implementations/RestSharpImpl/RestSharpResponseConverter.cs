@@ -27,12 +27,12 @@ namespace SoftAPIClient.Implementations.RestSharpImpl
 
             foreach (var (key, value) in requestObject.PathParameters)
             {
-                client.AddOrUpdateDefaultParameter(new Parameter(key, value, ParameterType.UrlSegment));
+                client.AddDefaultUrlSegment(key, value?.ToString());
             }
 
             foreach (var (key, value) in requestObject.QueryParameters)
             {
-                client.AddOrUpdateDefaultParameter(new Parameter(key, value, ParameterType.QueryString));
+                client.AddDefaultQueryParameter(key, value?.ToString());
             }
 
             var restRequest = new RestRequest(Enum.Parse<Method>(requestObject.Method));

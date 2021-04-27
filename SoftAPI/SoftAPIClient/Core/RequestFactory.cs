@@ -88,19 +88,6 @@ namespace SoftAPIClient.Core
             return pairs.Select(pair => new KeyValuePair<BodyType, object>(pair.Key.GetCustomAttribute<BodyAttribute>().BodyType, pair.Value)).FirstOrDefault();
         }
 
-        private IAuthentication Auth
-        {
-            get
-            {
-                IList<KeyValuePair<ParameterInfo, object>> pairs = GetArgumentsData().Where(p => p.Key.GetCustomAttribute<AuthAttribute>() != null).ToList();
-                if (pairs.Count == 0)
-                {
-                    return null;
-                }
-                return pairs.Select(pair => pair.Value as IAuthentication).First();
-            }
-        }
-
         private List<KeyValuePair<AttributeType, IDynamicParameter>> DynamicParameters()
         {
             IList<KeyValuePair<ParameterInfo, object>> pairs = GetArgumentsData().Where(p => p.Key.GetCustomAttribute<DynamicParameterAttribute>() != null).ToList();
@@ -176,7 +163,6 @@ namespace SoftAPIClient.Core
                 if (Client.DynamicUrlType != null && Client.DynamicUrlKey != string.Empty)
                 {
                     return ((IDynamicUrl) Activator.CreateInstance(Client.DynamicUrlType)).GetUrl(Client.DynamicUrlKey);
-
                 }
                 return null;
             }
@@ -189,7 +175,6 @@ namespace SoftAPIClient.Core
                 if (Client.Logger != null)
                 {
                     return (IRestLogger)Activator.CreateInstance(Client.Logger);
-
                 }
                 return null;
             }
@@ -231,7 +216,6 @@ namespace SoftAPIClient.Core
             ApplyRequest(clientRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
             ApplyRequest(specificRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
 
-            ApplyAuth(resultHeaders);
             ApplyDynamicParameters(resultHeaders, resultQueryParameters, resultFormDataParameters);
 
             var resultDeserializer = clientRequest?.Deserializer ?? specificRequest?.Deserializer;
@@ -293,15 +277,6 @@ namespace SoftAPIClient.Core
         private List<KeyValuePair<string, string>> RemoveNullableValues(IEnumerable<KeyValuePair<string, string>> input)
         {
             return input.Where(d => d.Value != null).ToList();
-        }
-
-        private void ApplyAuth(ICollection<KeyValuePair<string, string>> headers)
-        {
-            if (Auth == null)
-            {
-                return;
-            }
-            headers.Add(Auth.GetHeader());
         }
 
         private void ApplyDynamicParameters(List<KeyValuePair<string, string>> resultHeaders,

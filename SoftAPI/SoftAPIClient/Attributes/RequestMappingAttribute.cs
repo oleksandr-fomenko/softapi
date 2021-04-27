@@ -7,7 +7,7 @@
         public string[] Headers { get; set; } = { };
         public RequestMappingAttribute(object method)
         {
-            Method = method?.ToString()?.ToUpper();
+            Method = method?.ToString();
         }
     }
 }
