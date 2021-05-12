@@ -12,7 +12,7 @@
     <Description>A type-safe REST library</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>HttpClient,WebApi</PackageTags>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -23,8 +23,6 @@
   <ItemGroup>
     <PackageReference Include="MassiveDynamicProxyGenerator" Version="1.5.0" />
     <PackageReference Include="MassiveDynamicProxyGenerator.SimpleInjector" Version="1.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="106.11.7" />
   </ItemGroup>
 
 </Project>

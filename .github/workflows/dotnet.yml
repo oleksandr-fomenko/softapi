@@ -49,8 +49,8 @@ jobs:
       shell: powershell
       run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build SoftAPI/SoftAPIClient/SoftAPIClient.csproj
+          dotnet build SoftAPI/SoftAPI.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
     - name: Test
       shell: powershell
-      run: dotnet test SoftAPI/SoftAPIClient/SoftAPIClient.csproj --no-build --verbosity normal
+      run: dotnet test SoftAPI/SoftAPI.sln --no-build --verbosity normal

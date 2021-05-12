@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using SoftAPIClient.Core.Interfaces;
-using SoftAPIClient.MetaData;
 using Newtonsoft.Json;
 using RestSharp;
+using SoftAPIClient.Core.Interfaces;
+using SoftAPIClient.MetaData;
 
-namespace SoftAPIClient.Implementations.RestSharpImpl
+namespace SoftAPIClient.RestSharpNewtonsoft
 {
     public class RestSharpResponseConverter : IResponseConverter
     {
@@ -48,11 +48,11 @@ namespace SoftAPIClient.Implementations.RestSharpImpl
 
             HandleBody(requestObject, restRequest);
 
-            IResponseDeserializer deserializer = requestObject.Deserializer ?? new RestSharpJsonResponseDeserializer();
+            var deserializer = requestObject.Deserializer ?? new RestSharpJsonResponseDeserializer();
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            IRestResponse response = client.Execute(restRequest);
+            var response = client.Execute(restRequest);
             stopWatch.Stop();
 
             var responseHeaders = response.Headers

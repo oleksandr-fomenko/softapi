@@ -45,7 +45,7 @@ namespace SoftAPIClient.Core
 
         public RestClient AddResponseConvertor(IResponseConverter responseConvertor)
         {
-            Type key = responseConvertor.GetType();
+            var key = responseConvertor.GetType();
             _responseConvertors.TryAdd(key, responseConvertor);
             return this;
         }
@@ -75,24 +75,13 @@ namespace SoftAPIClient.Core
                             _logger?.LogRequest(resultRequest);
                             return resultRequest;
                         };
-                        var responseConvertorType = requestFactory.ResponseConverterType;
-                        if (!_responseConvertors.ContainsKey(responseConvertorType))
-                        {
-                            throw new InitializationException($"Response converter '{responseConvertorType.Name}' is not registered in the {typeof(RestClient).Name}");
-                        }
-                        var responseConverter = _responseConvertors[responseConvertorType];
 
-                        MethodInfo methodInfoResponse;
+                        var responseConverter = GetResponseConverter(requestFactory);
 
                         var returnTypeFromFunc = m.ReturnType.GenericTypeArguments[0];
-                        if (!returnTypeFromFunc.IsGenericType)
-                        {
-                            methodInfoResponse = typeof(RestClient).GetMethod(nameof(GetResponse), BindingFlags.NonPublic | BindingFlags.Instance);
-                        }
-                        else
-                        {
-                            methodInfoResponse = typeof(RestClient).GetMethod(nameof(GetResponseGeneric), BindingFlags.NonPublic | BindingFlags.Instance);
-                        }
+
+                        var methodToCall = !returnTypeFromFunc.IsGenericType ? nameof(GetResponse) : nameof(GetResponseGeneric);
+                        var methodInfoResponse = typeof(RestClient).GetMethod(methodToCall, BindingFlags.NonPublic | BindingFlags.Instance);
 
                         var responseMethodArguments = new Expression[] { Expression.Constant(responseConverter), Expression.Constant(request), Expression.Constant(m) }.ToList();
 
@@ -153,7 +142,7 @@ namespace SoftAPIClient.Core
 
         private Type GetTypeOfService<TService>()
         {
-            Type type = typeof(TService);
+            var type = typeof(TService);
             if (type.IsInterface && type.GetCustomAttribute<ClientAttribute>() != null)
             {
                 return type;
@@ -169,7 +158,31 @@ namespace SoftAPIClient.Core
             }
         }
 
-        private string GetMessageFromAnnotationIfPresent(MethodInfo methodInfo, object[] arguments)
+        private IResponseConverter GetResponseConverter(RequestFactory requestFactory)
+        {
+            var responseConvertorType = requestFactory.ResponseConverterType;
+
+            if (responseConvertorType == null)
+            {
+                var result = _responseConvertors.FirstOrDefault().Value;
+                if (result != null)
+                {
+                    return result;
+                }
+
+                throw new InitializationException(
+                    $"There is no registered convertors found for the '{typeof(RestClient).Name}'. Please add at least one of it.");
+            }
+
+            if (!_responseConvertors.ContainsKey(responseConvertorType))
+            {
+                throw new InitializationException($"Response converter '{responseConvertorType.Name}' is not registered in the {typeof(RestClient).Name}");
+            }
+            var responseConverter = _responseConvertors[responseConvertorType];
+            return responseConverter;
+        }
+
+        private string GetMessageFromAnnotationIfPresent(MemberInfo methodInfo, object[] arguments)
         {
             var logAttr = methodInfo.GetCustomAttribute<LogAttribute>();
             if (logAttr == null)

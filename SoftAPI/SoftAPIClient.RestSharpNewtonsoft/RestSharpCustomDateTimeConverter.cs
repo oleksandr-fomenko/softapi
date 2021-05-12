@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Newtonsoft.Json.Converters;
 
-namespace SoftAPIClient.Implementations.RestSharpImpl
+namespace SoftAPIClient.RestSharpNewtonsoft
 {
     public class RestSharpCustomDateTimeConverter : IsoDateTimeConverter
     {
