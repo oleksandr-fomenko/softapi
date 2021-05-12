@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using SoftAPIClient.Core.Interfaces;
 
-namespace SoftAPIClient.Implementations.RestSharpImpl
+namespace SoftAPIClient.RestSharpNewtonsoft
 {
     public class RestSharpXmlResponseDeserializer : IResponseDeserializer
     {

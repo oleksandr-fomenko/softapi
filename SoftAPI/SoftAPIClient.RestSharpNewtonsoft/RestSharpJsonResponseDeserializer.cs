@@ -1,8 +1,8 @@
 ﻿using System;
-using SoftAPIClient.Core.Interfaces;
 using Newtonsoft.Json;
+using SoftAPIClient.Core.Interfaces;
 
-namespace SoftAPIClient.Implementations.RestSharpImpl
+namespace SoftAPIClient.RestSharpNewtonsoft
 {
     public class RestSharpJsonResponseDeserializer : IResponseDeserializer
     {

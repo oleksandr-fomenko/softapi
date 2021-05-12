@@ -1,11 +1,9 @@
-﻿using SoftAPIClient.Implementations.RestSharpImpl;
-
-namespace SoftAPIClient.Attributes
+﻿namespace SoftAPIClient.Attributes
 {
     [System.AttributeUsage(System.AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class ClientAttribute : Base.BaseAttribute
     {
-        public System.Type ResponseConverterType { get; } = typeof(RestSharpResponseConverter);
+        public System.Type ResponseConverterType { get; }
         public string Url { get; set; }
         public string DynamicUrlKey { get; set; } = string.Empty;
         public System.Type Logger { get; set; }
