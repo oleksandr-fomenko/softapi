@@ -1,0 +1,36 @@
+name: Publish to NuGet
+
+on:
+  push:
+    branches: [ master ]
+#on:
+  #release:
+    #types: [created]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x'
+          source-url: https://api.nuget.org/v3/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}
+          BASE_FOLDER: SoftAPI
+      - name: Create the package for SoftAPIClient
+        run: dotnet build --configuration Release $BASE_FOLDER/SoftAPIClient/SoftAPIClient.csproj
+      - name: Create the package for SoftAPIClient.RestSharpNewtonsoft
+        run: dotnet build --configuration Release $BASE_FOLDER/SoftAPIClient.RestSharpNewtonsoft/SoftAPIClient.RestSharpNewtonsoft.csproj
+      - name: Create the package for SoftAPIClient
+        run: dotnet pack --configuration Release $BASE_FOLDER/SoftAPIClient/SoftAPIClient.csproj
+      - name: Create the package for SoftAPIClient.RestSharpNewtonsoft
+        run: dotnet pack --configuration Release $BASE_FOLDER/SoftAPIClient.RestSharpNewtonsoft/SoftAPIClient.RestSharpNewtonsoft.csproj
+      #- name: Publish the package SoftAPIClient to NuGet
+      #  run: dotnet nuget push $BASE_FOLDER/SoftAPIClient/bin/Release/*.nupkg
+      #- name: Publish the package SoftAPIClient.RestSharpNewtonsoft to NuGet
+       # run: dotnet nuget push $BASE_FOLDER/SoftAPIClient.RestSharpNewtonsoft/bin/Release/*.nupkg  

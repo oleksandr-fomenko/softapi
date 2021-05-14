@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Build and Test
 
 on:
   push:
@@ -53,4 +53,4 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
     - name: Test
       shell: powershell
-      run: dotnet test SoftAPI/SoftAPI.sln --no-build --verbosity normal
+      run: dotnet test SoftAPI/SoftAPI.sln --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura

@@ -23,8 +23,8 @@ namespace SoftAPIClient.Core.Auth
 
         public KeyValuePair<string, string> GetValue()
         {
-            string key = "Authorization";
-            string value = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(UserName + ":" + Password));
+            const string key = "Authorization";
+            var value = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(UserName + ":" + Password));
             return new KeyValuePair<string, string>(key, value);
         }
     }

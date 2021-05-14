@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftAPIClient", "SoftAPIClient\SoftAPIClient.csproj", "{E9B95BAB-6F07-4C15-B72D-75472D5432CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftAPIClient.RestSharpNewtonsoft", "SoftAPIClient.RestSharpNewtonsoft\SoftAPIClient.RestSharpNewtonsoft.csproj", "{91CFC123-623A-4D59-BCB4-CF9816EB0F68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftAPIClient.RestSharpNewtonsoft", "SoftAPIClient.RestSharpNewtonsoft\SoftAPIClient.RestSharpNewtonsoft.csproj", "{91CFC123-623A-4D59-BCB4-CF9816EB0F68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftAPIClient.Tests", "SoftAPIClient.Tests\SoftAPIClient.Tests.csproj", "{3CD12DB6-7196-4F30-8BB1-6F99A2E3ADA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{91CFC123-623A-4D59-BCB4-CF9816EB0F68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91CFC123-623A-4D59-BCB4-CF9816EB0F68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91CFC123-623A-4D59-BCB4-CF9816EB0F68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CD12DB6-7196-4F30-8BB1-6F99A2E3ADA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD12DB6-7196-4F30-8BB1-6F99A2E3ADA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CD12DB6-7196-4F30-8BB1-6F99A2E3ADA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CD12DB6-7196-4F30-8BB1-6F99A2E3ADA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
