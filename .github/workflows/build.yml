@@ -57,6 +57,6 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io /d:sonar.cobertura.reportPath='SoftAPI/Cobertura.xml' /d:sonar.coverageReportPaths='SoftAPI/SonarQube.xml'"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cobertura.reportPath="SoftAPI/Cobertura.xml" /d:sonar.coverageReportPaths="SoftAPI/SonarQube.xml"
           dotnet build SoftAPI/SoftAPI.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
