@@ -42,15 +42,21 @@ jobs:
       run: |
         New-Item -Path .\.sonar\scanner -ItemType Directory
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+    - name: Install DotNet report generator
+      shell: powershell
+      run: dotnet tool install dotnet-reportgenerator-globaltool --global
+    - name: Test
+      shell: powershell
+      run: dotnet test SoftAPI/SoftAPI.sln /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+    - name: Generate final report
+      shell: powershell
+      run: reportgenerator '-reports:SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.cobertura.xml;SoftAPI/SoftAPIClient.Tests/coverage.cobertura.xml' '-targetdir:SoftAPI' '-reporttypes:Cobertura;SonarQube'
     - name: Build and analyze
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io /d:sonar.cobertura.reportPath='SoftAPI/Cobertura.xml' /d:sonar.coverageReportPaths='SoftAPI/SonarQube.xml'"
           dotnet build SoftAPI/SoftAPI.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-    - name: Test
-      shell: powershell
-      run: dotnet test SoftAPI/SoftAPI.sln --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura

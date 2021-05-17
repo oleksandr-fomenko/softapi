@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SoftAPIClient\SoftAPIClient.csproj" />
+    <ProjectReference Include="..\SoftAPIClient.RestSharpNewtonsoft\SoftAPIClient.RestSharpNewtonsoft.csproj" />
   </ItemGroup>
 
 </Project>

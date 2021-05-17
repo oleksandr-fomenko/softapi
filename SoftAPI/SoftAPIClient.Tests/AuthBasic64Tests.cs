@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using SoftAPIClient.Core.Auth;
 using SoftAPIClient.MetaData;
-using SoftAPIClient.Tests.Core;
 
 namespace SoftAPIClient.Tests
 {
@@ -20,7 +19,7 @@ namespace SoftAPIClient.Tests
             var authBasic64 = new AuthBasic64("Ivan", "WeakPassword");
             var (expectedKey, expectedValue) = authBasic64.GetValue();
             Assert.AreEqual("Authorization", expectedKey);
-            Assert.AreEqual("SXZhbjpXZWFrUGFzc3dvcmQ=", expectedValue);
+            Assert.AreEqual("Basic SXZhbjpXZWFrUGFzc3dvcmQ=", expectedValue);
         }
 
     }
