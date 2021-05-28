@@ -76,7 +76,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft
             return result;
         }
 
-        private void HandleBody(Request request, IRestRequest restRequest)
+        public void HandleBody(Request request, IRestRequest restRequest)
         {
             var requestBody = request.Body.Value;
             if (requestBody == null)

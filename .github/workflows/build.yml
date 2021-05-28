@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Build and Test
 
 on:
   push:
@@ -42,15 +42,21 @@ jobs:
       run: |
         New-Item -Path .\.sonar\scanner -ItemType Directory
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+    - name: Install DotNet report generator
+      shell: powershell
+      run: dotnet tool install dotnet-reportgenerator-globaltool --global
+    - name: Test
+      shell: powershell
+      run: dotnet test SoftAPI/SoftAPI.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Generate final report
+      shell: powershell
+      run: reportgenerator '-reports:SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.opencover.xml;SoftAPI/SoftAPIClient.Tests/coverage.opencover.xml' '-targetdir:SoftAPI' '-reporttypes:Cobertura'
     - name: Build and analyze
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.flex.cobertura.reportPaths="SoftAPI/Cobertura.xml" /d:sonar.cs.opencover.reportsPaths="SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.opencover.xml;SoftAPI/SoftAPIClient.Tests/coverage.opencover.xml"
           dotnet build SoftAPI/SoftAPI.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-    - name: Test
-      shell: powershell
-      run: dotnet test SoftAPI/SoftAPI.sln --no-build --verbosity normal
