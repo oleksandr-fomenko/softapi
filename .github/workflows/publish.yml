@@ -21,7 +21,7 @@ jobs:
           source-url: https://api.nuget.org/v3/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}
-          BASE_FOLDER: SoftAPI
+          BASE_FOLDER: 'SoftAPI'
       - name: Create the package for SoftAPIClient
         run: dotnet build --configuration Release $BASE_FOLDER/SoftAPIClient/SoftAPIClient.csproj
       - name: Create the package for SoftAPIClient.RestSharpNewtonsoft
