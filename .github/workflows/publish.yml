@@ -21,16 +21,15 @@ jobs:
           source-url: https://api.nuget.org/v3/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}
-          BASE_FOLDER: 'SoftAPI'
       - name: Create the package for SoftAPIClient
-        run: dotnet build --configuration Release $BASE_FOLDER/SoftAPIClient/SoftAPIClient.csproj
+        run: dotnet build --configuration Release SoftAPI/SoftAPIClient/SoftAPIClient.csproj
       - name: Create the package for SoftAPIClient.RestSharpNewtonsoft
-        run: dotnet build --configuration Release $BASE_FOLDER/SoftAPIClient.RestSharpNewtonsoft/SoftAPIClient.RestSharpNewtonsoft.csproj
+        run: dotnet build --configuration Release SoftAPI/SoftAPIClient.RestSharpNewtonsoft/SoftAPIClient.RestSharpNewtonsoft.csproj
       - name: Create the package for SoftAPIClient
-        run: dotnet pack --configuration Release $BASE_FOLDER/SoftAPIClient/SoftAPIClient.csproj
+        run: dotnet pack --configuration Release SoftAPI/SoftAPIClient/SoftAPIClient.csproj
       - name: Create the package for SoftAPIClient.RestSharpNewtonsoft
-        run: dotnet pack --configuration Release $BASE_FOLDER/SoftAPIClient.RestSharpNewtonsoft/SoftAPIClient.RestSharpNewtonsoft.csproj
+        run: dotnet pack --configuration Release SoftAPI/SoftAPIClient.RestSharpNewtonsoft/SoftAPIClient.RestSharpNewtonsoft.csproj
       #- name: Publish the package SoftAPIClient to NuGet
-      #  run: dotnet nuget push $BASE_FOLDER/SoftAPIClient/bin/Release/*.nupkg
+      #  run: dotnet nuget push SoftAPI/SoftAPIClient/bin/Release/*.nupkg
       #- name: Publish the package SoftAPIClient.RestSharpNewtonsoft to NuGet
-       # run: dotnet nuget push $BASE_FOLDER/SoftAPIClient.RestSharpNewtonsoft/bin/Release/*.nupkg  
+       # run: dotnet nuget push SoftAPI/SoftAPIClient.RestSharpNewtonsoft/bin/Release/*.nupkg  
