@@ -42,15 +42,9 @@ jobs:
       run: |
         New-Item -Path .\.sonar\scanner -ItemType Directory
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-    #- name: Install DotNet report generator
-      #shell: powershell
-      #run: dotnet tool install dotnet-reportgenerator-globaltool --global
     - name: Test
       shell: powershell
       run: dotnet test SoftAPI/SoftAPI.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    #- name: Generate final report
-      #shell: powershell
-      #run: reportgenerator '-reports:SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.opencover.xml;SoftAPI/SoftAPIClient.Tests/coverage.opencover.xml' '-targetdir:SoftAPI' '-reporttypes:Cobertura'
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
@@ -65,5 +59,3 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build SoftAPI/SoftAPI.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-          
-#/d:sonar.cs.opencover.reportsPaths="SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.opencover.xml;SoftAPI/SoftAPIClient.Tests/coverage.opencover.xml"
