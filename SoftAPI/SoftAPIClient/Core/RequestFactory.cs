@@ -196,7 +196,7 @@ namespace SoftAPIClient.Core
 
             if (resultUrl == null)
             {
-                throw new InitializationException($"The result URL is not defined at the interface '{nameof(InterfaceType)}' and method '{MethodInfo.Name}'");
+                throw new InitializationException($"The result URL is not defined at the interface '{InterfaceType.Name}' and method '{MethodInfo.Name}'");
             }
 
             resultUrl += Client.Path;
