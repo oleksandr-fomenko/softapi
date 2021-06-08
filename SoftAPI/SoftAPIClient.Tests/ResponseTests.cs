@@ -3,6 +3,7 @@ using SoftAPIClient.Core.Interfaces;
 using SoftAPIClient.MetaData;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 namespace SoftAPIClient.Tests
@@ -37,16 +38,33 @@ namespace SoftAPIClient.Tests
                 Deserializer = deserializer
             };
 
-            Assert.AreEqual(response.HttpStatusCode, httpStatusCode);
-            Assert.AreEqual(response.ResponseUri, responseUri);
-            Assert.AreEqual(response.Headers, headers);
-            Assert.AreEqual(response.Cookies, cookies);
-            Assert.AreEqual(response.ContentType, contentType);
-            Assert.AreEqual(response.OriginalRequest, originalRequest);
-            Assert.AreEqual(response.OriginalResponse, originalResponse);
-            Assert.AreEqual(response.ResponseBodyString, responseBodyString);
-            Assert.AreEqual(response.ElapsedTime, elapsedTime);
-            Assert.AreEqual(response.Deserializer, deserializer);
+            Assert.AreEqual(httpStatusCode, response.HttpStatusCode);
+            Assert.AreEqual(responseUri, response.ResponseUri);
+            Assert.AreEqual(headers, response.Headers);
+            Assert.AreEqual(cookies, response.Cookies);
+            Assert.AreEqual(contentType, response.ContentType);
+            Assert.AreEqual(originalRequest, response.OriginalRequest);
+            Assert.AreEqual(originalResponse, response.OriginalResponse);
+            Assert.AreEqual(responseBodyString, response.ResponseBodyString);
+            Assert.AreEqual(elapsedTime, response.ElapsedTime);
+            Assert.AreEqual(deserializer, response.Deserializer);
+        }
+
+        [Test]
+        public void VerifyDefaultResponse()
+        {
+            var response = new Response();
+
+            Assert.AreEqual((HttpStatusCode)0, response.HttpStatusCode);
+            Assert.IsNull(response.ResponseUri);
+            Assert.AreEqual(Enumerable.Empty<IList<KeyValuePair<string, string>>>(), response.Headers);
+            Assert.AreEqual(Enumerable.Empty<IList<KeyValuePair<string, string>>>(), response.Cookies);
+            Assert.IsNull(response.ContentType);
+            Assert.IsNull(response.OriginalRequest);
+            Assert.IsNull(response.OriginalResponse);
+            Assert.IsNull(response.ResponseBodyString);
+            Assert.AreEqual(0L, response.ElapsedTime);
+            Assert.IsNull(response.Deserializer);
         }
 
         [Test]
@@ -65,6 +83,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(response.ResponseBodyString, responseGeneric.ResponseBodyString);
             Assert.AreEqual(response.ElapsedTime, responseGeneric.ElapsedTime);
             Assert.AreEqual(response.Deserializer, responseGeneric.Deserializer);
+            Assert.IsNull(responseGeneric.Body);
         }
 
         [Test]
@@ -83,6 +102,8 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(response.ResponseBodyString, responseGeneric2.ResponseBodyString);
             Assert.AreEqual(response.ElapsedTime, responseGeneric2.ElapsedTime);
             Assert.AreEqual(response.Deserializer, responseGeneric2.Deserializer);
+            Assert.IsNull(responseGeneric2.Body);
+            Assert.IsNull(responseGeneric2.Body2);
         }
 
         private Response GetResponseTestObject()
