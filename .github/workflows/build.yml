@@ -50,6 +50,9 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.opencover.xml
+        verbose: true
+        fail_ci_if_error: true
+        codecov_curl_args: '-g'
     - name: Build and analyze
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
