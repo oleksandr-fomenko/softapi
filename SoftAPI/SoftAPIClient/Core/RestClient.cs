@@ -61,10 +61,12 @@ namespace SoftAPIClient.Core
             var type = GetTypeOfService<TService>();
             var adapter = new InterceptorAdapter(invocation =>
             {
+                var isMethodFound = false;
                 type.GetMethods().ToList().ForEach(m =>
                 {
                     if (IsMethodMatched(invocation, m))
                     {
+                        isMethodFound = true;
                         var arguments = invocation.Arguments;
                         var requestFactory = new RequestFactory(type, m, arguments);
 
@@ -94,6 +96,10 @@ namespace SoftAPIClient.Core
                         invocation.ReturnValue = Expression.Lambda(castToFuncResponse).Compile();
                     }
                 });
+                if (isMethodFound)
+                {
+                    throw new InitializationException($"There is no apppropriate method found through the next methods {type.GetMethods().Select(m => m.Name)} found in the interface {type.Name}");
+                }
             });
             var container = new Container();
             container.RegisterProxy(type, adapter);
@@ -175,7 +181,7 @@ namespace SoftAPIClient.Core
                 {
                     return true;
                 }
-                return p.Key == p.Value;
+                return p.Key == p.Value || p.Key.IsAssignableFrom(p.Value);
             });
 
             return baseChecksPassed && allParametersMatched;
