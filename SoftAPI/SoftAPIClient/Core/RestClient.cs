@@ -144,11 +144,11 @@ namespace SoftAPIClient.Core
         private Type GetTypeOfService<TService>()
         {
             var type = typeof(TService);
-            if (type.IsInterface && type.GetCustomAttribute<ClientAttribute>() != null)
+            if (type.GetCustomAttribute<ClientAttribute>() != null)
             {
                 return type;
             }
-            throw new InitializationException($"Provided type '{type.Name}' must be an interface and annotated with '{typeof(ClientAttribute).Name}' attribute");
+            throw new InitializationException($"Provided type '{type.Name}' must be annotated with '{typeof(ClientAttribute).Name}' attribute");
         }
 
         private bool IsMethodMatched(IInvocation invocation, MethodInfo methodInfo)
