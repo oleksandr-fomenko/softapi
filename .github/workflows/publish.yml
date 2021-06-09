@@ -16,8 +16,6 @@ jobs:
         with:
           dotnet-version: '3.1.x'
           source-url: https://api.nuget.org/v3/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}
       - name: Create the package for SoftAPIClient
         run: dotnet build --configuration Release SoftAPI/SoftAPIClient/SoftAPIClient.csproj
       - name: Create the package for SoftAPIClient.RestSharpNewtonsoft
@@ -27,6 +25,6 @@ jobs:
       - name: Create the package for SoftAPIClient.RestSharpNewtonsoft
         run: dotnet pack --configuration Release SoftAPI/SoftAPIClient.RestSharpNewtonsoft/SoftAPIClient.RestSharpNewtonsoft.csproj
       - name: Publish the package SoftAPIClient to NuGet
-        run: dotnet nuget push SoftAPI/SoftAPIClient/bin/Release/*.nupkg
+        run: dotnet nuget push SoftAPI/SoftAPIClient/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }}
       - name: Publish the package SoftAPIClient.RestSharpNewtonsoft to NuGet
-        run: dotnet nuget push SoftAPI/SoftAPIClient.RestSharpNewtonsoft/bin/Release/*.nupkg  
+        run: dotnet nuget push SoftAPI/SoftAPIClient.RestSharpNewtonsoft/bin/Release/*.nupkg  --api-key ${{ secrets.NUGET_TOKEN }}
