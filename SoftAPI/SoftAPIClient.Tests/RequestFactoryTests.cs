@@ -39,7 +39,7 @@ namespace SoftAPIClient.Tests
         }
 
         [Test]
-        public void VerifyDefaultResponseInterceptors()
+        public void VerifyDefaultRequestFactoryProperties()
         {
             var targetInterface = typeof(ITestInterface);
             var methodName = "Get";
@@ -48,13 +48,16 @@ namespace SoftAPIClient.Tests
             var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
 
             Assert.AreEqual(Enumerable.Empty<IResponseInterceptor>(), requestFactory.ResponseInterceptors);
+            Assert.IsNull(requestFactory.ResponseConverterType);
+            Assert.IsNull(requestFactory.Logger);
         }
+        
+    }
 
-        [Client]
-        private interface ITestInterface
-        {
-            [RequestMapping("GET", Path = "/path")]
-            Func<Response> Get([QueryParameter("id")] string id);
-        }
+    [Client]
+    public interface ITestInterface
+    {
+        [RequestMapping("GET", Path = "/path")]
+        Func<Response> Get([QueryParameter("id")] string id);
     }
 }

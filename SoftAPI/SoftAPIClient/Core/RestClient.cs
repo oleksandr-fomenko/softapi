@@ -63,15 +63,16 @@ namespace SoftAPIClient.Core
             {
                 type.GetMethods().ToList().ForEach(m =>
                 {
-                    if (invocation.MethodName == m.Name)
+                    if (IsMethodMatched(invocation, m))
                     {
-                        var requestFactory = new RequestFactory(type, m, invocation.Arguments);
+                        var arguments = invocation.Arguments;
+                        var requestFactory = new RequestFactory(type, m, arguments);
 
                         OverrideLoggerFromClient(requestFactory);
 
                         Func<Request> request = () => {
                             var resultRequest = requestFactory.BuildRequest();
-                            _logger?.LogBefore(GetMessageFromAnnotationIfPresent(m, invocation.Arguments));
+                            _logger?.LogBefore(GetMessageFromAnnotationIfPresent(m, arguments));
                             _logger?.LogRequest(resultRequest);
                             return resultRequest;
                         };
@@ -143,11 +144,41 @@ namespace SoftAPIClient.Core
         private Type GetTypeOfService<TService>()
         {
             var type = typeof(TService);
-            if (type.IsInterface && type.GetCustomAttribute<ClientAttribute>() != null)
+            if (type.GetCustomAttribute<ClientAttribute>() != null)
             {
                 return type;
             }
-            throw new InitializationException($"Provided type '{type.Name}' must be an interface and annotated with '{typeof(ClientAttribute).Name}' attribute");
+            throw new InitializationException($"Provided type '{type.Name}' must be annotated with '{typeof(ClientAttribute).Name}' attribute");
+        }
+
+        private bool IsMethodMatched(IInvocation invocation, MethodInfo methodInfo)
+        {
+            var parameters = methodInfo.GetParameters();
+            var arguments = invocation.Arguments;
+            var conditionList = new List<Func<bool>>
+            {
+                () => invocation.MethodName == methodInfo.Name,
+                () => arguments.Length == parameters.Length,
+            };
+
+            bool baseChecksPassed = conditionList.All(c => c.Invoke());
+
+            if (!baseChecksPassed)
+            {
+                return false;
+            }
+
+            var allParameters = parameters.Select((t, i) => new KeyValuePair<Type, Type>(t?.ParameterType, arguments[i]?.GetType()));
+            var allParametersMatched = allParameters.All(p => 
+            {
+                if (p.Value == null && (Nullable.GetUnderlyingType(p.Key) != null ||  p.Key.IsClass))
+                {
+                    return true;
+                }
+                return p.Key == p.Value;
+            });
+
+            return baseChecksPassed && allParametersMatched;
         }
 
         private void OverrideLoggerFromClient(RequestFactory requestFactory)
