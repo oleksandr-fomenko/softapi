@@ -31,9 +31,7 @@ namespace SoftAPIClient.Tests
             const string methodName = "Get";
             var arguments = new[] { "1" , "2"};
 
-            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
-
-            var ex = Assert.Throws<InitializationException>(() => requestFactory.BuildRequest());
+            var ex = Assert.Throws<InitializationException>(() => new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments));
             Assert.AreEqual($"Argument count '{arguments.Length}' and MethodInfo count '{1}' " +
                     $"is not matched for the method '{methodName}' in type '{nameof(ITestInterface)}'", ex.Message);
         }
