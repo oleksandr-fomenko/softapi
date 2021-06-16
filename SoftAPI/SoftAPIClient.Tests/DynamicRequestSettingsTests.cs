@@ -9,23 +9,23 @@ namespace SoftAPIClient.Tests
         [Test]
         public void VerifyRequestSettings()
         {
-            var followRedirects = false;
-            Func<string, string> encoder = s => s;
+            const bool followRedirects = false;
+            string Encoder(string s) => s;
             var dynamicRequestSettings = new DynamicRequestSettings 
             { 
                 FollowRedirects = followRedirects,
-                Encoder = encoder
+                Encoder = Encoder
             };
 
             Assert.AreEqual(followRedirects, dynamicRequestSettings.FollowRedirects);
-            Assert.AreEqual(encoder, dynamicRequestSettings.Encoder);
+            Assert.AreEqual((Func<string, string>) Encoder, dynamicRequestSettings.Encoder);
             Assert.AreEqual($"FollowRedirects={followRedirects}", dynamicRequestSettings.ToString());
         }
 
         [Test]
         public void VerifyDefaultRequestSettings()
         {
-            var followRedirects = true;
+            const bool followRedirects = true;
             var dynamicRequestSettings = new DynamicRequestSettings();
 
             Assert.AreEqual(followRedirects, dynamicRequestSettings.FollowRedirects);

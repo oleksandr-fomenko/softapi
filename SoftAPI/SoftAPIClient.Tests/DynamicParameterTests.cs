@@ -12,8 +12,8 @@ namespace SoftAPIClient.Tests
         public void VerifyDynamicParameter(Tuple<DynamicParameter, string, string, AttributeType> testData)
         {
             var dynamicParameter = testData.Item1;
-            string name = testData.Item2;
-            string value = testData.Item3;
+            var name = testData.Item2;
+            var value = testData.Item3;
             var attributeType = testData.Item4;
             Assert.AreEqual(attributeType, dynamicParameter.GetAttributeType());
             Assert.AreEqual(new KeyValuePair<string, string>(name, value), dynamicParameter.GetValue());

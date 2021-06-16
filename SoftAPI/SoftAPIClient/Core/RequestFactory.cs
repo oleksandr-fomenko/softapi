@@ -15,55 +15,14 @@ namespace SoftAPIClient.Core
         private const string SplitCharter = "=";
         private Type InterfaceType { get; }
         private MethodInfo MethodInfo { get; }
-        private object[] Arguments { get; }
         private ClientAttribute Client => InterfaceType.GetCustomAttribute<ClientAttribute>();
         private RequestMappingAttribute RequestMapping => MethodInfo.GetCustomAttribute<RequestMappingAttribute>();
-        private IEnumerable<KeyValuePair<ParameterInfo, object>> GetArgumentsData()
-        {
-            IList<ParameterInfo> parameterInfos = MethodInfo.GetParameters();
-            IList<object> parameterValues = Arguments;
-            if (parameterInfos.Count != parameterValues.Count)
-            {
-                throw new InitializationException(
-                    $"Argument count '{parameterValues.Count}' and MethodInfo count '{parameterInfos.Count}' " +
-                    $"is not matched for the method '{MethodInfo.Name}' in type '{InterfaceType.Name}'");
-            }
-            return parameterInfos.Select((t, i) => new KeyValuePair<ParameterInfo, object>(t, parameterValues[i])).ToList();
-        }
-
-        private Dictionary<string, object> PathParameters => GetArgumentsData()
-                .Where(pair => pair.Key.GetCustomAttribute<PathParameterAttribute>() != null)
-                .ToDictionary(pair => pair.Key.GetCustomAttribute<PathParameterAttribute>().Value,
-                    pair => pair.Value);
-
-        private Dictionary<string, object> QueryParameters => GetArgumentsData()
-                .Where(pair => pair.Key.GetCustomAttribute<QueryParameterAttribute>() != null)
-                .ToDictionary(pair => pair.Key.GetCustomAttribute<QueryParameterAttribute>().Value,
-                    pair => pair.Value);
-
-        private Dictionary<string, object> FormDataParameters => GetArgumentsData()
-            .Where(pair => pair.Key.GetCustomAttribute<FormDataParameterAttribute>() != null)
-            .ToDictionary(pair => pair.Key.GetCustomAttribute<FormDataParameterAttribute>().Value,
-                pair => pair.Value);
-
-        private List<KeyValuePair<string, string>> GetReplaceableParameters() => GetArgumentsData()
-            .Where(pair => pair.Key.GetCustomAttribute<ReplaceableParameterAttribute>() != null)
-            .Select(pair =>
-            {
-                var key = pair.Key.GetCustomAttribute<ReplaceableParameterAttribute>().Value;
-                var value = pair.Value?.ToString();
-                return new KeyValuePair<string, string>(key, value);
-            }).ToList();
-
-        private List<KeyValuePair<string, string>> GetHeadersParameters() => GetArgumentsData()
-            .Where(pair => pair.Key.GetCustomAttribute<HeaderParameterAttribute>() != null)
-            .Select(pair =>
-            {
-                var key = pair.Key.GetCustomAttribute<HeaderParameterAttribute>().Value;
-                var value = pair.Value?.ToString();
-                return new KeyValuePair<string, string>(key, value);
-            }).ToList();
-
+        private IEnumerable<KeyValuePair<ParameterInfo, object>> ArgumentsData { get; }
+        private Dictionary<string, object> PathParameters => Utils.GetBaseParameterDataDictionary<PathParameterAttribute>(ArgumentsData);
+        private Dictionary<string, object> QueryParameters => Utils.GetBaseParameterDataDictionary<QueryParameterAttribute>(ArgumentsData);
+        private Dictionary<string, object> FormDataParameters => Utils.GetBaseParameterDataDictionary<FormDataParameterAttribute>(ArgumentsData);
+        private List<KeyValuePair<string, string>> GetReplaceableParameters() => Utils.GetBaseParameterDataList<ReplaceableParameterAttribute>(ArgumentsData);
+        private List<KeyValuePair<string, string>> GetHeadersParameters() => Utils.GetBaseParameterDataList<HeaderParameterAttribute>(ArgumentsData);
 
         private List<KeyValuePair<string, string>> GetRequestHeaders() => RequestMapping.Headers
             .Select(h =>
@@ -80,7 +39,7 @@ namespace SoftAPIClient.Core
 
         private KeyValuePair<BodyType, object> GetBody()
         {
-            IList<KeyValuePair<ParameterInfo, object>> pairs = GetArgumentsData().Where(p => p.Key.GetCustomAttribute<BodyAttribute>() != null).ToList();
+            IList<KeyValuePair<ParameterInfo, object>> pairs = ArgumentsData.Where(p => p.Key.GetCustomAttribute<BodyAttribute>() != null).ToList();
             if (pairs.Count == 0)
             {
                 return new KeyValuePair<BodyType, object>();
@@ -90,7 +49,7 @@ namespace SoftAPIClient.Core
 
         private List<KeyValuePair<AttributeType, IDynamicParameter>> DynamicParameters()
         {
-            IList<KeyValuePair<ParameterInfo, object>> pairs = GetArgumentsData().Where(p => p.Key.GetCustomAttribute<DynamicParameterAttribute>() != null).ToList();
+            IList<KeyValuePair<ParameterInfo, object>> pairs = ArgumentsData.Where(p => p.Key.GetCustomAttribute<DynamicParameterAttribute>() != null).ToList();
             if (pairs.Count == 0)
             {
                 return new List<KeyValuePair<AttributeType, IDynamicParameter>>();
@@ -104,7 +63,7 @@ namespace SoftAPIClient.Core
         {
             get
             {
-                IList<KeyValuePair<ParameterInfo, object>> pairs = GetArgumentsData().Where(p => p.Key.GetCustomAttribute<SettingsAttribute>() != null).ToList();
+                IList<KeyValuePair<ParameterInfo, object>> pairs = ArgumentsData.Where(p => p.Key.GetCustomAttribute<SettingsAttribute>() != null).ToList();
                 if (pairs.Count == 0)
                 {
                     return null;
@@ -113,31 +72,8 @@ namespace SoftAPIClient.Core
             }
         }
 
-        private IInterceptor ClientInterceptor
-        {
-            get
-            {
-                if (Client.RequestInterceptor != null)
-                {
-                    return (IInterceptor)Activator.CreateInstance(Client.RequestInterceptor);
-
-                }
-                return null;
-            }
-        }
-
-        private IInterceptor RequestInterceptor
-        {
-            get
-            {
-                if (RequestMapping.RequestInterceptor != null)
-                {
-                    return (IInterceptor)Activator.CreateInstance(RequestMapping.RequestInterceptor);
-
-                }
-                return null;
-            }
-        }
+        private IInterceptor ClientInterceptor => Utils.CreateInstanceIfNotNull<IInterceptor>(Client.RequestInterceptor);
+        private IInterceptor RequestInterceptor => Utils.CreateInstanceIfNotNull<IInterceptor>(RequestMapping.RequestInterceptor);
 
         public IEnumerable<IResponseInterceptor> ResponseInterceptors
         {
@@ -146,11 +82,11 @@ namespace SoftAPIClient.Core
                 var result = Enumerable.Empty<IResponseInterceptor>();
                 if (Client.ResponseInterceptors != null)
                 {
-                    result = result.Concat(Client.ResponseInterceptors.Select(t => (IResponseInterceptor)Activator.CreateInstance(t)));
+                    result = result.Concat(Client.ResponseInterceptors.Select(Utils.CreateInstanceIfNotNull<IResponseInterceptor>));
                 }
                 if (RequestMapping.ResponseInterceptors != null)
                 {
-                    result = result.Concat(RequestMapping.ResponseInterceptors.Select(t => (IResponseInterceptor)Activator.CreateInstance(t)));
+                    result = result.Concat(RequestMapping.ResponseInterceptors.Select(Utils.CreateInstanceIfNotNull<IResponseInterceptor>));
                 }
                 return result;
             }
@@ -162,56 +98,34 @@ namespace SoftAPIClient.Core
             {
                 if (Client.DynamicUrlType != null && Client.DynamicUrlKey != string.Empty)
                 {
-                    return ((IDynamicUrl) Activator.CreateInstance(Client.DynamicUrlType)).GetUrl(Client.DynamicUrlKey);
+                    return Utils.CreateInstanceIfNotNull<IDynamicUrl>(Client.DynamicUrlType).GetUrl(Client.DynamicUrlKey);
                 }
                 return null;
             }
         }
 
-        public IRestLogger Logger
-        {
-            get
-            {
-                if (Client.Logger != null)
-                {
-                    return (IRestLogger)Activator.CreateInstance(Client.Logger);
-                }
-                return null;
-            }
-        }
+        public IRestLogger Logger => Utils.CreateInstanceIfNotNull<IRestLogger>(Client.Logger);
 
         public RequestFactory(Type interfaceType, MethodInfo methodInfo, object[] arguments)
         {
             InterfaceType = interfaceType;
             MethodInfo = methodInfo;
-            Arguments = arguments;
+            ArgumentsData = Utils.GetArguments(arguments, methodInfo, interfaceType);
         }
 
         public Request BuildRequest()
         {
             var clientRequest = ClientInterceptor?.Intercept();
             var specificRequest = RequestInterceptor?.Intercept();
-            var dynamicParameterUrl = GetDynamicParameterUrl();
-            var resultUrl = DynamicUrl ?? Client.Url ?? dynamicParameterUrl ?? clientRequest?.Url ?? specificRequest?.Url;
 
-            if (resultUrl == null)
-            {
-                throw new InitializationException($"The result URL is not defined at the interface '{InterfaceType.Name}' and method '{MethodInfo.Name}'");
-            }
-
-            resultUrl += Client.Path;
-            resultUrl += clientRequest?.Path;
-            resultUrl += RequestMapping.Path;
-            resultUrl += specificRequest?.Path;
-            resultUrl = ApplyReplaceableParameters(resultUrl);
-
+            var resultUrl = GetUrl(clientRequest, specificRequest);
             var resultHeaders = GetRequestHeaders();
             var resultPathParameters = PathParameters;
             var resultQueryParameters = QueryParameters;
             var resultFormDataParameters = FormDataParameters;
             var headerParameters = GetHeadersParameters();
 
-            MergeHeaders(resultHeaders, headerParameters);
+            Utils.MergeCollectionToList(resultHeaders, headerParameters);
 
             ApplyRequest(clientRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
             ApplyRequest(specificRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
@@ -224,33 +138,13 @@ namespace SoftAPIClient.Core
                 Url = resultUrl,
                 Method = RequestMapping.Method,
                 PathParameters = resultPathParameters,
-                QueryParameters = RemoveNullableValues(resultQueryParameters),
-                FormDataParameters = RemoveNullableValues(resultFormDataParameters),
-                Headers = RemoveNullableValues(resultHeaders.Distinct()),
+                QueryParameters = Utils.RemoveNullableValues(resultQueryParameters),
+                FormDataParameters = Utils.RemoveNullableValues(resultFormDataParameters),
+                Headers = Utils.RemoveNullableValues(resultHeaders.Distinct()),
                 Body = GetBody(),
                 Deserializer = resultDeserializer,
                 Settings = Settings
             };
-        }
-
-        private void MergeHeaders(List<KeyValuePair<string, string>> result, IEnumerable<KeyValuePair<string, string>> input)
-        {
-            result.AddRange(input);
-        }
-
-        private void MergeMaps(Dictionary<string, object> result, Dictionary<string, object> input)
-        {
-            foreach (var (key, value) in input)
-            {
-                if (!result.ContainsKey(key))
-                {
-                    result.Add(key, value);
-                }
-                else
-                {
-                    result[key] = input[key];
-                }
-            }
         }
 
         private void ApplyRequest(Request request,
@@ -263,20 +157,10 @@ namespace SoftAPIClient.Core
             {
                 return;
             }
-            MergeHeaders(resultHeaders, request.Headers);
-            MergeMaps(resultPathParameters, request.PathParameters);
-            MergeMaps(resultQueryParameters, request.QueryParameters);
-            MergeMaps(resultFormDataParameters, request.FormDataParameters);
-        }
-
-        private Dictionary<string, object> RemoveNullableValues(Dictionary<string, object> input)
-        {
-            return input.Where(d => d.Value != null).ToDictionary(k => k.Key, v => v.Value);
-        }
-
-        private List<KeyValuePair<string, string>> RemoveNullableValues(IEnumerable<KeyValuePair<string, string>> input)
-        {
-            return input.Where(d => d.Value != null).ToList();
+            Utils.MergeCollectionToList(resultHeaders, request.Headers);
+            Utils.MergeDictionaries(resultPathParameters, request.PathParameters);
+            Utils.MergeDictionaries(resultQueryParameters, request.QueryParameters);
+            Utils.MergeDictionaries(resultFormDataParameters, request.FormDataParameters);
         }
 
         private void ApplyDynamicParameters(List<KeyValuePair<string, string>> resultHeaders,
@@ -288,27 +172,19 @@ namespace SoftAPIClient.Core
             {
                 return;
             }
-            var headers = dynamicParams
-                .Where(pair => pair.Key == AttributeType.Header)
-                .Where(pair => pair.Value != null)
-                .Select(pair => pair.Value.GetValue());
+            var headers = FilterDynamicParameters(dynamicParams, AttributeType.Header);
+            var queryParameters = FilterDynamicParameters(dynamicParams, AttributeType.Query).ToDictionary(k => k.Key, v => v.Value as object);
+            var formDataParameters = FilterDynamicParameters(dynamicParams, AttributeType.FormData).ToDictionary(k => k.Key, v => v.Value as object);
 
-            var queryParameters = dynamicParams
-                .Where(pair => pair.Key == AttributeType.Query)
-                .Where(pair => pair.Value != null)
-                .Select(pair => pair.Value.GetValue())
-                .ToDictionary(k => k.Key, v => v.Value as object);
+            Utils.MergeCollectionToList(resultHeaders, headers);
+            Utils.RemoveDuplicates(resultHeaders);
+            Utils.MergeDictionaries(resultQueryParameters, queryParameters);
+            Utils.MergeDictionaries(resultFormDataParameters, formDataParameters);
+        }
 
-            var formDataParameters = dynamicParams
-                .Where(pair => pair.Key == AttributeType.FormData)
-                .Where(pair => pair.Value != null)
-                .Select(pair => pair.Value.GetValue())
-                .ToDictionary(k => k.Key, v => v.Value as object);
-
-            MergeHeaders(resultHeaders, headers);
-            RemoveDuplicateHeaders(resultHeaders);
-            MergeMaps(resultQueryParameters, queryParameters);
-            MergeMaps(resultFormDataParameters, formDataParameters);
+        private IEnumerable<KeyValuePair<string, string>> FilterDynamicParameters(List<KeyValuePair<AttributeType, IDynamicParameter>> dynamicParams, AttributeType attributeType)
+        {
+            return dynamicParams.Where(pair => pair.Key == attributeType).Where(pair => pair.Value != null).Select(pair => pair.Value.GetValue());
         }
 
         private KeyValuePair<AttributeType, IDynamicParameter> HandleDynamicParameters(KeyValuePair<AttributeType, IDynamicParameter> input)
@@ -328,6 +204,25 @@ namespace SoftAPIClient.Core
                 throw new InitializationException("The dynamic attribute-type should be initialized in the attribute or inside the DynamicParameter implementation");
             }
             return new KeyValuePair<AttributeType, IDynamicParameter>(attributeTypeFromDynamicParameter, value);
+        }
+
+        private string GetUrl(Request clientRequest, Request specificRequest)
+        {
+            var dynamicParameterUrl = GetDynamicParameterUrl();
+            var resultUrl = DynamicUrl ?? Client.Url ?? dynamicParameterUrl ?? clientRequest?.Url ?? specificRequest?.Url;
+
+            if (resultUrl == null)
+            {
+                throw new InitializationException($"The result URL is not defined at the interface '{InterfaceType.Name}' and method '{MethodInfo.Name}'");
+            }
+
+            resultUrl += Client.Path;
+            resultUrl += clientRequest?.Path;
+            resultUrl += RequestMapping.Path;
+            resultUrl += specificRequest?.Path;
+            resultUrl = ApplyReplaceableParameters(resultUrl);
+
+            return resultUrl;
         }
 
         private string GetDynamicParameterUrl()
@@ -357,14 +252,6 @@ namespace SoftAPIClient.Core
             }
 
             return resultUrl;
-        }
-
-        private void RemoveDuplicateHeaders(List<KeyValuePair<string, string>> result)
-        {
-            var tempResult = result.GroupBy(p => p.Key, StringComparer.OrdinalIgnoreCase)
-                .ToDictionary(g => g.Key, g => g.Last().Value, StringComparer.OrdinalIgnoreCase).ToList();
-            result.Clear();
-            result.AddRange(tempResult);
         }
     }
 }
