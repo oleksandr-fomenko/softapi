@@ -14,15 +14,15 @@ namespace SoftAPIClient.Tests
         [Test]
         public void VerifyResponse()
         {
-            var httpStatusCode = HttpStatusCode.OK;
+            const HttpStatusCode httpStatusCode = HttpStatusCode.OK;
             var responseUri = new Uri("http://localhost:8080");
             var headers = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("Content-Type", "application/json") };
             var cookies = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("Cookie1", "CookiesValue") };
-            var contentType = "application/json";
+            const string contentType = "application/json";
             var originalRequest = new Request();
             var originalResponse = new object();
-            var responseBodyString = "{\"name\":\"Ivan\",\"age\":18}";
-            var elapsedTime = 1000;
+            const string responseBodyString = "{\"name\":\"Ivan\",\"age\":18}";
+            const int elapsedTime = 1000;
             IResponseDeserializer deserializer = null;
             var response = new Response
             {

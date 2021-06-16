@@ -14,9 +14,9 @@ namespace SoftAPIClient.Tests
         [Test]
         public void VerifyRequest()
         {
-            var url = "http://localhost:8080";
-            var method = "POST";
-            var path = "/path";
+            const string url = "http://localhost:8080";
+            const string method = "POST";
+            const string path = "/path";
             var pathParameters = new Dictionary<string, object> { { "path_int_key", 1}, { "path_string_key", "string" } };
             var queryParameters = new Dictionary<string, object> { { "query_int_key", 1}, { "query_string_key", "string" } };
             var formDataParameters = new Dictionary<string, object> { { "formData_int_key", 1}, { "formData_string_key", "string" } };
