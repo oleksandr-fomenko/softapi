@@ -12,7 +12,7 @@ namespace SoftAPIClient.Core
     public class RequestFactory
     {
         public Type ResponseConverterType => Client.ResponseConverterType;
-        private const string SplitCharter = "=";
+        private const string HeaderSeparator = "=";
         private Type InterfaceType { get; }
         private MethodInfo MethodInfo { get; }
         private ClientAttribute Client => InterfaceType.GetCustomAttribute<ClientAttribute>();
@@ -27,10 +27,10 @@ namespace SoftAPIClient.Core
         private List<KeyValuePair<string, string>> GetRequestHeaders() => RequestMapping.Headers
             .Select(h =>
             {
-                var splitHeaders = h.Split(SplitCharter);
+                var splitHeaders = h.Split(HeaderSeparator);
                 if (splitHeaders.Length < 2)
                 {
-                    throw new InitializationException($"The following header '{h}' is not specified of the format: key{SplitCharter}value");
+                    throw new InitializationException($"The following header '{h}' is not specified of the format: key{HeaderSeparator}value");
                 }
                 var key = splitHeaders[0];
                 var value = splitHeaders.Skip(1).Aggregate((first, next) => first + next);

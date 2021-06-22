@@ -8,9 +8,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft
     {
         public T Convert<T>(string response)
         {
-            var stringReader = new StringReader(response);
-            var serializer = new XmlSerializer(typeof(T));
-            return (T) serializer.Deserialize(stringReader);
+            return (T) new XmlSerializer(typeof(T)).Deserialize(new StringReader(response));
         }
     }
 }

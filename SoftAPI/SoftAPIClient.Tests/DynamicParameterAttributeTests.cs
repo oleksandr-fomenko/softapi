@@ -11,7 +11,6 @@ namespace SoftAPIClient.Tests
         {
             var dynamicParameterAttribute = new DynamicParameterAttribute();
             Assert.AreEqual(AttributeType.Undefined, dynamicParameterAttribute.AttributeType);
-            Assert.IsNull(dynamicParameterAttribute.Value);
         }
 
         [Test]
@@ -19,7 +18,6 @@ namespace SoftAPIClient.Tests
         {
             var dynamicParameterAttribute = new DynamicParameterAttribute(AttributeType.Header);
             Assert.AreEqual(AttributeType.Header, dynamicParameterAttribute.AttributeType);
-            Assert.IsNull(dynamicParameterAttribute.Value);
         }
     }
 }
