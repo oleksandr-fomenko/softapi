@@ -21,4 +21,19 @@
     <ProjectReference Include="..\SoftAPIClient\SoftAPIClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="StaticData\ExpectedRequestMessage_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StaticData\ExpectedRequestMessage_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StaticData\ExpectedResponseMessage_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StaticData\ExpectedResponseMessage_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

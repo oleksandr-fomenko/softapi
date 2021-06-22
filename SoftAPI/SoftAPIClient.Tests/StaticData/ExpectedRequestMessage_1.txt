@@ -1,0 +1,33 @@
+﻿--- Request Data start ---
+Url - 'http://localhost:8080'
+Method - 'POST'
+
+Query Parameters:
+
+query_int_key=1
+query_string_key=string
+
+Path Parameters:
+
+path_int_key=1
+path_string_key=string
+
+FormData Parameters:
+
+formData_int_key=1
+formData_string_key=string
+
+Headers:
+
+Content-Type=application/json
+Authorization=Bearer foo
+
+Dynamic request settings:
+
+FollowRedirects=True
+
+Body: Type - 'Json;, Value:
+
+{"name":"Ivan","age":15}
+
+--- Request Data end ---

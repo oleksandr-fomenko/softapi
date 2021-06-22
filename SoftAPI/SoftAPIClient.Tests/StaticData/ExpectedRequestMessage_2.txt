@@ -1,0 +1,5 @@
+﻿--- Request Data start ---
+Url - 'http://localhost:8080'
+Method - 'POST'
+
+--- Request Data end ---
