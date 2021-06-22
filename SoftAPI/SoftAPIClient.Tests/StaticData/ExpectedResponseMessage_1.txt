@@ -1,0 +1,20 @@
+﻿--- Response Data start ---
+Url - 'http://localhost:8080/'
+Http Status Code - 'OK'
+Content Type - 'application/json'
+
+Headers:
+
+Content-Type=application/json
+Authorization=Bearer foo
+
+Cookies:
+
+Cookie1=CookiesValue
+
+Response Body string:
+{"name":"Ivan","age":18}
+
+Elapsed time, ms - '1000'
+
+--- Response Data end ---

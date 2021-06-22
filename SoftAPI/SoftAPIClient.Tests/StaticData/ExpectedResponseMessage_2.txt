@@ -1,0 +1,7 @@
+﻿--- Response Data start ---
+Url - 'http://localhost:8080/'
+Http Status Code - 'BadRequest'
+Content Type - 'text/plain'
+Elapsed time, ms - '50'
+
+--- Response Data end ---

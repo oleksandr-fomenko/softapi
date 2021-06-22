@@ -127,6 +127,11 @@ namespace SoftAPIClient.Tests
         {
             public string Name { get; set; }
             public int Age { get; set; }
+
+            public override string ToString()
+            {
+                return "{\"name\":\"" + Name + "\",\"age\":" + Age + "}";
+            }
         }
     }
 }
