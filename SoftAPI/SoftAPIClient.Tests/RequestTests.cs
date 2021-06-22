@@ -21,7 +21,7 @@ namespace SoftAPIClient.Tests
             var queryParameters = new Dictionary<string, object> { { "query_int_key", 1}, { "query_string_key", "string" } };
             var formDataParameters = new Dictionary<string, object> { { "formData_int_key", 1}, { "formData_string_key", "string" } };
             var headers = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("Content-Type", "application/json") };
-            var body = new KeyValuePair<BodyType, object>(BodyType.Json, new UserDto { Age = 15, Name = "Ivan"});
+            var body = new KeyValuePair<BodyType, object>(BodyType.Json, new UserJsonDto { Age = 15, Name = "Ivan"});
             IResponseDeserializer deserializer = null;
             var dynamicRequestSettings = new DynamicRequestSettings();
 

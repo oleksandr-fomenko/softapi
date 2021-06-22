@@ -17,7 +17,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 ResponseBodyString = "{\"name\":\"" + name + "\",\"age\":" + age + "}",
                 Deserializer = new RestSharpJsonResponseDeserializer()
             };
-            var entity = response.GetEntity<UserDto>();
+            var entity = response.GetEntity<UserJsonDto>();
             Assert.NotNull(entity);
             Assert.AreEqual(name, entity.Name);
             Assert.AreEqual(age, entity.Age);
@@ -35,7 +35,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 Deserializer = new RestSharpJsonResponseDeserializer()
             };
 
-            var responseGeneric = new ResponseGeneric<UserDto>(response);
+            var responseGeneric = new ResponseGeneric<UserJsonDto>(response);
             var body = responseGeneric.Body;
             Assert.NotNull(body);
             Assert.AreEqual(name, body.Name);
@@ -54,7 +54,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 Deserializer = new RestSharpJsonResponseDeserializer()
             };
 
-            var responseGeneric2 = new ResponseGeneric2<UserDto, UserDto>(response);
+            var responseGeneric2 = new ResponseGeneric2<UserJsonDto, UserJsonDto>(response);
             var body1 = responseGeneric2.Body;
             var body2 = responseGeneric2.Body2;
 
@@ -67,7 +67,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             Assert.AreEqual(age, body2.Age);
         }
 
-        public class UserDto
+        public class UserJsonDto
         {
             public string Name { get; set; }
             public int Age { get; set; }

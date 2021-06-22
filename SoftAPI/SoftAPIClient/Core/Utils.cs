@@ -83,11 +83,9 @@ namespace SoftAPIClient.Core
             result.AddRange(tempResult);
         }
 
-
         public static void MergeCollectionToList(List<KeyValuePair<string, string>> result, IEnumerable<KeyValuePair<string, string>> input)
         {
             result.AddRange(input);
         }
-
     }
 }

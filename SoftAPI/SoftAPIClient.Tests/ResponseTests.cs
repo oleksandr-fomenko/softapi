@@ -71,7 +71,7 @@ namespace SoftAPIClient.Tests
         public void VerifyResponseGeneric()
         {
             var response = GetResponseTestObject();
-            var responseGeneric = new ResponseGeneric<UserDto>(response);
+            var responseGeneric = new ResponseGeneric<UserJsonDto>(response);
 
             Assert.AreEqual(response.HttpStatusCode, responseGeneric.HttpStatusCode);
             Assert.AreEqual(response.ResponseUri, responseGeneric.ResponseUri);
@@ -90,7 +90,7 @@ namespace SoftAPIClient.Tests
         public void VerifyResponseGeneric2()
         {
             var response = GetResponseTestObject();
-            var responseGeneric2 = new ResponseGeneric2<UserDto, UserDto>(response);
+            var responseGeneric2 = new ResponseGeneric2<UserJsonDto, UserJsonDto>(response);
 
             Assert.AreEqual(response.HttpStatusCode, responseGeneric2.HttpStatusCode);
             Assert.AreEqual(response.ResponseUri, responseGeneric2.ResponseUri);
@@ -123,7 +123,7 @@ namespace SoftAPIClient.Tests
             };
         }
 
-        public class UserDto 
+        public class UserJsonDto 
         {
             public string Name { get; set; }
             public int Age { get; set; }
