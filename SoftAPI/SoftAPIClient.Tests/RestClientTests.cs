@@ -99,7 +99,7 @@ namespace SoftAPIClient.Tests
                 Age = 99
             };
 
-            var expectedResponse = new Response
+            var response = new Response
             {
                 HttpStatusCode = HttpStatusCode.OK,
                 ResponseUri = new Uri("http://localhost:8080/api/{path_interceptor_param}/path"),
@@ -115,6 +115,8 @@ namespace SoftAPIClient.Tests
                 ResponseBodyString = body.ToString(),
                 ElapsedTime = 1000
             };
+
+            var expectedResponse = new ResponseGeneric<ResponseTests.UserJsonDto>(response);
 
             RestClient.Instance.AddResponseConvertor(new FakeResponseConverter());
             var actualResponse = RestClient.Instance.GetService<ITestInterfaceValid>().Post("Bearer foo", body).Invoke();

@@ -289,7 +289,7 @@ namespace SoftAPIClient.Tests
 
         [Log("Send POST request to 'Nowhere' for unitTesting with the next parameters: Authorization={0}, Body={1}")]
         [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" }, ResponseInterceptors = new[] { typeof(TestResponseInterceptor) })]
-        Func<Response> Post([HeaderParameter("Authorization")] string authorization, [Body] ResponseTests.UserJsonDto body);
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> Post([HeaderParameter("Authorization")] string authorization, [Body] ResponseTests.UserJsonDto body);
     }
 
     [Client(DynamicUrlKey = "http://localhost:8080", DynamicUrlType = typeof(TestDynamicUrl))]
