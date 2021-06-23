@@ -28,7 +28,14 @@ namespace SoftAPIClient.Tests
         }
 
         [Test, Order(2)]
-        public void VerifyGetAllRequestWhenNoLoggingForRestClient()
+        public void VerifyInitializationExceptionWhenResponseConvertorIsNotRegistered()
+        {
+            var ex = Assert.Throws<InitializationException>(() => RestClient.Instance.GetService<ITestInterfaceValid>().GetAll().Invoke());
+            Assert.AreEqual($"Response converter '{typeof(FakeResponseConverter).Name}' is not registered in the {typeof(RestClient).Name}", ex.Message);
+        }
+
+        [Test, Order(3)]
+        public void VerifyGetAllRequestWhenNoLoggerForRestClient()
         {
             var expectedResponse = new Response
             {
@@ -51,7 +58,37 @@ namespace SoftAPIClient.Tests
             VerifyResponses(expectedResponse, actualResponse);
         }
 
-        [Test, Order(3)]
+        [Test, Order(4)]
+        public void VerifyGetAllRequestWhenNoLoggingForRestClient()
+        {
+            var loggingDictionary = new Dictionary<string, string>();
+            var restLogger = new RestLogger(s => loggingDictionary.Add(RestLoggerTests.BeforeConstKey, s),
+                s => loggingDictionary.Add(RestLoggerTests.RequestConstKey, s),
+                s => loggingDictionary.Add(RestLoggerTests.ResponseConstKey, s));
+            RestClient.Instance.SetLogger(restLogger);
+            var expectedResponse = new Response
+            {
+                HttpStatusCode = HttpStatusCode.OK,
+                ResponseUri = new Uri("http://localhost:8080/api/{path_interceptor_param}/path/all"),
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                Cookies = new List<KeyValuePair<string, string>>(),
+                ContentType = "application/json",
+                OriginalResponse = null,
+                ResponseBodyString = null,
+                ElapsedTime = 1000
+            };
+
+            RestClient.Instance.AddResponseConvertor(new FakeResponseConverter());
+            var actualResponse = RestClient.Instance.GetService<ITestInterfaceValid>().GetAll().Invoke();
+
+            VerifyResponses(expectedResponse, actualResponse);
+            Assert.IsFalse(loggingDictionary.ContainsKey(RestLoggerTests.BeforeConstKey));
+        }
+
+        [Test, Order(5)]
         public void VerifyPatchRequestWhenLoggingForRestClientIsProvided()
         {
             var loggingDictionary = new Dictionary<string, string>();
@@ -84,7 +121,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual("Send PATCH request to 'Nowhere' for unitTesting with the invalid argument index: invalid={5}", loggingDictionary[RestLoggerTests.BeforeConstKey]);
         }
 
-        [Test, Order(4)]
+        [Test, Order(6)]
         public void VerifyPostRequestWhenLoggingForRestClientIsProvided()
         {
             var loggingDictionary = new Dictionary<string, string>();
