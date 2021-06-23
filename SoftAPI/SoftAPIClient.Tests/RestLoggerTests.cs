@@ -10,9 +10,9 @@ namespace SoftAPIClient.Tests
 {
     public class RestLoggerTests : AbstractTest
     {
-        private const string BeforeConstKey = "BEFORE";
-        private const string RequestConstKey = "REQUEST";
-        private const string ResponseConstKey = "RESPONSE";
+        public const string BeforeConstKey = "BEFORE";
+        public const string RequestConstKey = "REQUEST";
+        public const string ResponseConstKey = "RESPONSE";
         private const string BeforeConstValue = "Sending request...";
 
         [TestCaseSource(nameof(GetRequestTestData))]

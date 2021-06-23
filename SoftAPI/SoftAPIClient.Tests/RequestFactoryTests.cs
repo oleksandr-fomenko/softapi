@@ -274,7 +274,7 @@ namespace SoftAPIClient.Tests
         Func<Response> Post([HeaderParameter("Authorization")] string authorization, [Body] ResponseTests.UserJsonDto body);
     }
 
-    [Client(Url = "http://localhost:8080", Path = "/api/{path_interceptor_param}", RequestInterceptor = typeof(TestRequestInterceptor), ResponseInterceptors = new []{typeof(TestResponseInterceptor) }) ]
+    [Client(typeof(FakeResponseConverter), Url = "http://localhost:8080", Path = "/api/{path_interceptor_param}", RequestInterceptor = typeof(TestRequestInterceptor), ResponseInterceptors = new []{typeof(TestResponseInterceptor) }) ]
     public interface ITestInterfaceValid
     {
         [RequestMapping("GET", Path = "/path/all")]
@@ -283,9 +283,11 @@ namespace SoftAPIClient.Tests
         [RequestMapping("GET", Headers = new[] { "x-api-key+123" })]
         Func<Response> GetInvalidHeaderFormat();
 
+        [Log("Send PATCH request to 'Nowhere' for unitTesting with the invalid argument index: invalid={5}")]
         [RequestMapping("PATCH", Path = "/path/{pathId}/{dynamicReplaceable}")]
         Func<Response> Patch([ReplaceableParameter("pathId")] int pathId, [DynamicParameter] IDynamicParameter dynamicParameter);
 
+        [Log("Send POST request to 'Nowhere' for unitTesting with the next parameters: Authorization={0}, Body={1}")]
         [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" }, ResponseInterceptors = new[] { typeof(TestResponseInterceptor) })]
         Func<Response> Post([HeaderParameter("Authorization")] string authorization, [Body] ResponseTests.UserJsonDto body);
     }
