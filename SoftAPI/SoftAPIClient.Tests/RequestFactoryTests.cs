@@ -165,6 +165,8 @@ namespace SoftAPIClient.Tests
             var actualRequest = requestFactory.BuildRequest();
 
             Assert.AreEqual(expectedRequest, actualRequest);
+            Assert.IsNotNull(requestFactory.ResponseInterceptors);
+            Assert.IsNotEmpty(requestFactory.ResponseInterceptors);
         }
 
         [TestCase(AttributeType.Header)]
