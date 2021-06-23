@@ -6,7 +6,8 @@ using SoftAPIClient.MetaData;
 
 namespace SoftAPIClient.RestSharpNewtonsoft.Tests
 {
-    public class RestSharpResponseConverterTests : AbstractTest
+    [TestFixture]
+    public class RestSharpResponseConverterHandleBodyTests : RestSharpResponseConverter
     {
         [Test]
         public void VerifyIfNullBodyIsProvidedRestRequestHasNoBody()
@@ -14,8 +15,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             var request = new Request();
             var restRequest = new RestRequest(Method.GET);
 
-            var restSharpResponseConverter = new RestSharpResponseConverter();
-            restSharpResponseConverter.HandleBody(request, restRequest);
+            HandleBody(request, restRequest);
 
             Assert.Null(restRequest.Body);
         }
@@ -41,8 +41,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             };
             var restRequest = new RestRequest(Method.GET);
 
-            var restSharpResponseConverter = new RestSharpResponseConverter();
-            restSharpResponseConverter.HandleBody(request, restRequest);
+            HandleBody(request, restRequest);
 
             var actualParameters = restRequest.Parameters;
             Assert.AreEqual(expectedParameters, actualParameters);
@@ -68,8 +67,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             };
             var restRequest = new RestRequest(Method.GET);
 
-            var restSharpResponseConverter = new RestSharpResponseConverter();
-            restSharpResponseConverter.HandleBody(request, restRequest);
+            HandleBody(request, restRequest);
 
             Assert.IsNotNull(restRequest.XmlSerializer);
             Assert.IsInstanceOf<RestSharp.Serializers.DotNetXmlSerializer>(restRequest.XmlSerializer);
@@ -77,6 +75,5 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             var actualParameters = restRequest.Parameters;
             Assert.AreEqual(expectedParameters, actualParameters);
         }
-
     }
 }

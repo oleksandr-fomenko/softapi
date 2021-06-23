@@ -52,7 +52,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var response = client.Execute(restRequest);
+            var response = GetRestResponse(client, restRequest);
             stopWatch.Stop();
 
             var responseHeaders = response.Headers
@@ -76,7 +76,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft
             return result;
         }
 
-        public virtual void HandleBody(Request request, IRestRequest restRequest)
+        protected virtual void HandleBody(Request request, IRestRequest restRequest)
         {
             var requestBody = request.Body.Value;
             if (requestBody == null)
@@ -100,5 +100,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft
                     break;
             }
         }
+
+        protected virtual IRestResponse GetRestResponse(IRestClient client, RestRequest restRequest) => client.Execute(restRequest);
     }
 }
