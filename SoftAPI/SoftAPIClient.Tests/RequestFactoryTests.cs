@@ -94,6 +94,166 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(expectedRequest, actualRequest);
         }
 
+        [Test]
+        public void VerifyGetAllRequest()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "GetAll";
+
+            var arguments = new object[] { };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/all",
+                Method = "GET",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [Test]
+        public void VerifyPatchRequest()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "Patch";
+            var dynamicParameter = new DynamicParameter(AttributeType.Replaceable, "dynamicReplaceable", "2");
+            var arguments = new object[] { "1", dynamicParameter };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/1/2",
+                
+                Method = "PATCH",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [TestCase(AttributeType.Header)]
+        [TestCase(AttributeType.Query)]
+        [TestCase(AttributeType.FormData)]
+        public void VerifyPatchRequestWhenDynamicAttributeValueIsNull(AttributeType attributeType)
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "Patch";
+            var dynamicParameter = new DynamicParameter(attributeType, "dynamicReplaceable", null);
+            var arguments = new object[] { "1", dynamicParameter };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/1/{dynamicReplaceable}",
+
+                Method = "PATCH",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [Test]
+        public void VerifyPatchRequestWhenDynamicParameterIsUndefined()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "Patch";
+
+            var dynamicParameter = new DynamicParameter(AttributeType.Undefined, "dynamicReplaceable", "2");
+            var arguments = new object[] { "1", dynamicParameter };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var ex = Assert.Throws<InitializationException>(() => requestFactory.BuildRequest());
+            Assert.AreEqual("The dynamic attribute-type should be initialized in the attribute or inside the DynamicParameter implementation", ex.Message);
+        }
+
+        [Test]
+        public void VerifyGetInvalidHeaderFormatRequest()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "GetInvalidHeaderFormat";
+
+            var arguments = new object[] { };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var ex = Assert.Throws<InitializationException>(() => requestFactory.BuildRequest());
+            Assert.AreEqual("The following header 'x-api-key+123' is not specified of the format: key=value", ex.Message);
+        }
+
+        [Test]
+        public void VerifyGetAllRequestWhenDynamicUrlAndDynamicSettingsAreProvided()
+        {
+            var targetInterface = typeof(ITestTestDynamicUrlInterface);
+            const string methodName = "GetAll";
+            var settings = new DynamicRequestSettings();
+            var arguments = new object[] { settings };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/path/all",
+                Method = "GET",
+                Settings = settings
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
     }
 
     [Client]
@@ -112,20 +272,27 @@ namespace SoftAPIClient.Tests
         Func<Response> Post([HeaderParameter("Authorization")] string authorization, [Body] ResponseTests.UserJsonDto body);
     }
 
-    [Client(Url = "http://localhost:8080", Path = "/api/{path_interceptor_param}", RequestInterceptor = typeof(TestRequestInterceptor))]
+    [Client(Url = "http://localhost:8080", Path = "/api/{path_interceptor_param}", RequestInterceptor = typeof(TestRequestInterceptor), ResponseInterceptors = new []{typeof(TestResponseInterceptor) }) ]
     public interface ITestInterfaceValid
     {
         [RequestMapping("GET", Path = "/path/all")]
         Func<Response> GetAll();
 
-        [RequestMapping("GET", Path = "/path")]
-        Func<Response> Get([QueryParameter("id")] string id);
+        [RequestMapping("GET", Headers = new[] { "x-api-key+123" })]
+        Func<Response> GetInvalidHeaderFormat();
 
-        [RequestMapping("PATCH", Path = "/path/{pathId}")]
-        Func<Response> Patch([PathParameter("pathId")] int pathId, [HeaderParameter("Authorization")] string authorization, [DynamicParameter] IDynamicParameter dynamicParameter);
+        [RequestMapping("PATCH", Path = "/path/{pathId}/{dynamicReplaceable}")]
+        Func<Response> Patch([ReplaceableParameter("pathId")] int pathId, [DynamicParameter] IDynamicParameter dynamicParameter);
 
-        [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" })]
+        [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" }, ResponseInterceptors = new[] { typeof(TestResponseInterceptor) })]
         Func<Response> Post([HeaderParameter("Authorization")] string authorization, [Body] ResponseTests.UserJsonDto body);
+    }
+
+    [Client(DynamicUrlKey = "http://localhost:8080", DynamicUrlType = typeof(TestDynamicUrl))]
+    public interface ITestTestDynamicUrlInterface
+    {
+        [RequestMapping("GET", Path = "/path/all")]
+        Func<Response> GetAll([Settings] DynamicRequestSettings requestSettings);
     }
 
     public class TestRequestInterceptor : IInterceptor
@@ -151,6 +318,22 @@ namespace SoftAPIClient.Tests
                     { "formData_interceptor_param",  "x"}
                 }
             };
+        }
+    }
+
+    public class TestResponseInterceptor : IResponseInterceptor
+    {
+        public void ProcessResponse(Response response)
+        {
+            //do nothing
+        }
+    }
+
+    public class TestDynamicUrl : IDynamicUrl
+    {
+        public string GetUrl(string key)
+        {
+            return key;
         }
     }
 }
