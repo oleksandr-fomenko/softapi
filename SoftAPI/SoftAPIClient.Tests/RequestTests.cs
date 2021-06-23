@@ -49,13 +49,15 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(body, request.Body);
             Assert.AreEqual(deserializer, request.Deserializer);
             Assert.AreEqual(dynamicRequestSettings, request.Settings);
+            Assert.IsTrue(request.GetHashCode(request) != 0);
+            Assert.IsTrue(request.Equals(request));
         }
 
         [Test]
         public void VerifyDefaultRequest()
         {
             var request = new Request();
-
+            
             Assert.IsNull(request.Url);
             Assert.IsNull(request.Method);
             Assert.AreEqual(string.Empty, request.Path);
@@ -66,6 +68,8 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(default(KeyValuePair<BodyType, object>), request.Body);
             Assert.IsNull(request.Deserializer);
             Assert.IsNull(request.Settings);
+            Assert.IsTrue(request.GetHashCode(request) != 0);
+            Assert.IsTrue(request.Equals(request));
         }
 
     
