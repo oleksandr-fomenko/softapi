@@ -39,7 +39,10 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
         };
         private static readonly KeyValuePair<BodyType, object> Body = new KeyValuePair<BodyType, object>(BodyType.Json, UserObject);
         private static readonly RestSharpJsonResponseDeserializer Deserializer = new RestSharpJsonResponseDeserializer();
-        private static readonly DynamicRequestSettings DynamicRequestSettings = new DynamicRequestSettings();
+        private static readonly DynamicRequestSettings DynamicRequestSettings = new DynamicRequestSettings
+        {
+            Encoder = s => s
+        };
 
         private RestResponse _restResponse;
 
