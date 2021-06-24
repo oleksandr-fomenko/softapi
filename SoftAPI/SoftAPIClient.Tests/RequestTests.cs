@@ -75,7 +75,7 @@ namespace SoftAPIClient.Tests
         }
 
         [Test]
-        public void VerifyNullableHashCode()
+        public void VerifyEqualsCasesAndNullableHashCode()
         {
             var request = new Request
             {
@@ -85,6 +85,10 @@ namespace SoftAPIClient.Tests
                 FormDataParameters = null,
                 Headers = null
             };
+            var request2 = request;
+            Assert.IsFalse(request.Equals(null));
+            Assert.IsTrue(request.Equals(request2));
+            Assert.IsFalse(request.Equals(new object()));
             Assert.IsTrue(request.GetHashCode(request) != 0);
         }
     }
