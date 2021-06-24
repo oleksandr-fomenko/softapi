@@ -74,6 +74,18 @@ namespace SoftAPIClient.Tests
             Assert.IsTrue(request.Equals(new Request()));
         }
 
-    
+        [Test]
+        public void VerifyNullableHashCode()
+        {
+            var request = new Request
+            {
+                Path = null,
+                PathParameters = null,
+                QueryParameters = null,
+                FormDataParameters = null,
+                Headers = null
+            };
+            Assert.IsTrue(request.GetHashCode(request) != 0);
+        }
     }
 }
