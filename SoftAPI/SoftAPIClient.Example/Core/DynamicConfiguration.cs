@@ -1,6 +1,4 @@
-﻿using System;
-using System.Configuration;
-using SoftAPIClient.Core.Interfaces;
+﻿using SoftAPIClient.Core.Interfaces;
 
 namespace SoftAPIClient.Example.Core
 {
@@ -8,9 +6,7 @@ namespace SoftAPIClient.Example.Core
     {
         public string GetUrl(string key)
         {
-           
             return CustomConfigurationManager.Configuration[key];
-           // throw new NotImplementedException();
         }
     }
 }
