@@ -6,15 +6,6 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
     [SetUpFixture]
     public class GlobalSetup
     {
-        [OneTimeSetUp]
-        public void OneTimeBaseSetup()
-        {
-        }
-
-        [OneTimeTearDown]
-        public void AfterAll()
-        {
-        }
     }
 
     [TestFixture]
