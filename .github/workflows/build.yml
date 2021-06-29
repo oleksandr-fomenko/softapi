@@ -44,7 +44,7 @@ jobs:
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
     - name: Test
       shell: powershell
-      run: $env:GitHub:Username = "${{ github.actor }}"; $env:GitHub:Token="${{ secrets.GITHUB_TOKEN }}"; dotnet test SoftAPI/SoftAPI.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: $env:GitHub:Username = "${{ secrets.USER_NAME }}"; $env:GitHub:Token="${{ secrets.USER_TOKEN }}"; dotnet test SoftAPI/SoftAPI.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
