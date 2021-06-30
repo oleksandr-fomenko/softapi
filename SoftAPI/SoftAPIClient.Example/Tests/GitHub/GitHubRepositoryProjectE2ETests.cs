@@ -109,19 +109,9 @@ namespace SoftAPIClient.Example.Tests.GitHub
             var responseDeletedColumn = DeleteColumnById(_columnId);
             Assert.AreEqual(HttpStatusCode.NoContent, responseDeletedColumn.HttpStatusCode);
 
-            //Verify there is no more created Column
-            responseGetColumnById = GetService<IGitHubColumnService>()
-                .GetColumnById(_columnId).Invoke();
-            Assert.AreEqual(HttpStatusCode.NotFound, responseGetColumnById.HttpStatusCode);
-
             //Delete Project
             var responseDeletedProject = DeleteProjectById(_projectId);
             Assert.AreEqual(HttpStatusCode.NoContent, responseDeletedProject.HttpStatusCode);
-
-            //Verify there is no more created Column
-            responseGetProjectById = GetService<IGitHubProjectService>()
-                .GetProjectById(_projectId).Invoke();
-            Assert.AreEqual(HttpStatusCode.NotFound, responseGetProjectById.HttpStatusCode);
         }
 
         [TearDown]
