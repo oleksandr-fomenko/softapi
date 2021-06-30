@@ -1,23 +1,23 @@
 ﻿using System.Net;
 using NUnit.Framework;
-using SoftAPIClient.Example.Factories;
-using SoftAPIClient.Example.Services;
+using SoftAPIClient.Example.Factories.GitHub;
+using SoftAPIClient.Example.Services.GitHub;
 
-namespace SoftAPIClient.Example.Tests
+namespace SoftAPIClient.Example.Tests.GitHub
 {
     public class GitHubUserServiceTests : AbstractTest
     {
         [Test]
-        public void VerifyAttributeType()
+        public void VerifyGetCurrentUserData()
         {
             var response = GetService<IGitHubUserService>()
-                .GetCurrentUser(UserDataFactory.AuthorizationData)
+                .GetCurrentUser(GitHubDataFactory.AuthorizationData)
                 .Invoke();
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
             var body = response.Body;
-            Assert.AreEqual(UserDataFactory.Username, body.Login);
+            Assert.AreEqual(GitHubDataFactory.Username, body.Login);
             Assert.IsNotNull(body.Plan);
-            Assert.AreEqual(UserDataFactory.Plan, body.Plan.Name);
+            Assert.AreEqual(GitHubDataFactory.Plan, body.Plan.Name);
         }
     }
 }
