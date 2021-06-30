@@ -18,7 +18,7 @@ namespace SoftAPIClient.Example.Models
         public Uri ColumnsUrl { get; set; }
 
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("node_id")]
         public string NodeId { get; set; }

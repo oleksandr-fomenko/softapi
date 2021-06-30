@@ -21,6 +21,6 @@ namespace SoftAPIClient.Example.Services
 
         [Log("Send PATCH request to 'GitHub API' for updating project by Id={0} with the next data={1}")]
         [RequestMapping(Method.PATCH, Path = "/{projectId}")]
-        Func<ResponseGeneric<GitHubResponse>> UpdateProjectById([PathParameter("projectId")] int projectId, [Body] GitHubBodyRequest body);
+        Func<ResponseGeneric<GitHubResponse>> UpdateProjectById([PathParameter("projectId")] int projectId, [Body] GitHubBodyRequestShort body);
     }
 }
