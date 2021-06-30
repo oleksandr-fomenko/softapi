@@ -1,7 +1,7 @@
 ﻿using SoftAPIClient.Core.Auth;
 using SoftAPIClient.Example.Core;
 
-namespace SoftAPIClient.Example.Factories
+namespace SoftAPIClient.Example.Factories.GitHub
 {
     public static class GitHubDataFactory
     {

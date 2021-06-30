@@ -1,12 +1,12 @@
-﻿using SoftAPIClient.Attributes;
-using System;
+﻿using System;
 using RestSharp;
+using SoftAPIClient.Attributes;
 using SoftAPIClient.Core.Auth;
 using SoftAPIClient.Example.Core;
-using SoftAPIClient.Example.Models;
+using SoftAPIClient.Example.Models.GitHub;
 using SoftAPIClient.MetaData;
 
-namespace SoftAPIClient.Example.Services
+namespace SoftAPIClient.Example.Services.GitHub
 {
     [Client(DynamicUrlKey = "GitHub:Api", DynamicUrlType = typeof(DynamicConfiguration))]
     public interface IGitHubUserService

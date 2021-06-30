@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using SoftAPIClient.Core.Interfaces;
-using SoftAPIClient.Example.Factories;
+using SoftAPIClient.Example.Factories.GitHub;
 using SoftAPIClient.MetaData;
 
-namespace SoftAPIClient.Example.Interceptors
+namespace SoftAPIClient.Example.Interceptors.GitHub
 {
     public class GitHubRepositoryRequestInterceptor : IInterceptor
     {

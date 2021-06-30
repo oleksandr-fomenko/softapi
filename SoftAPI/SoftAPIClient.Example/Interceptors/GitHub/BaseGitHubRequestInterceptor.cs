@@ -2,7 +2,7 @@
 using SoftAPIClient.Core.Interfaces;
 using SoftAPIClient.MetaData;
 
-namespace SoftAPIClient.Example.Interceptors
+namespace SoftAPIClient.Example.Interceptors.GitHub
 {
     public class BaseGitHubRequestInterceptor : IInterceptor
     {

@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Net;
 using NUnit.Framework;
-using SoftAPIClient.Example.Factories;
-using SoftAPIClient.Example.Services;
+using SoftAPIClient.Example.Factories.GitHub;
+using SoftAPIClient.Example.Services.GitHub;
 
-namespace SoftAPIClient.Example.Tests
+namespace SoftAPIClient.Example.Tests.GitHub
 {
     public class GitHubRepositoryProjectReadOnlyTests : AbstractTest
     {

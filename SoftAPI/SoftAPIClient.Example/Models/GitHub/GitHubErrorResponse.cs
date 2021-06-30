@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace SoftAPIClient.Example.Models
+namespace SoftAPIClient.Example.Models.GitHub
 {
     public class GitHubErrorResponse : AbstractJsonModel
     {

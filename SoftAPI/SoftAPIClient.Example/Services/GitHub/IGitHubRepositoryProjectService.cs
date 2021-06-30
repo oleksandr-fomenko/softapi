@@ -1,13 +1,13 @@
-﻿using SoftAPIClient.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RestSharp;
+using SoftAPIClient.Attributes;
 using SoftAPIClient.Example.Core;
-using SoftAPIClient.Example.Interceptors;
-using SoftAPIClient.Example.Models;
+using SoftAPIClient.Example.Interceptors.GitHub;
+using SoftAPIClient.Example.Models.GitHub;
 using SoftAPIClient.MetaData;
 
-namespace SoftAPIClient.Example.Services
+namespace SoftAPIClient.Example.Services.GitHub
 {
     [Client(DynamicUrlKey = "GitHub:Api", Path = "/repos", DynamicUrlType = typeof(DynamicConfiguration), RequestInterceptor = typeof(GitHubAuthenticationRequestInterceptor))]
     public interface IGitHubRepositoryProjectService

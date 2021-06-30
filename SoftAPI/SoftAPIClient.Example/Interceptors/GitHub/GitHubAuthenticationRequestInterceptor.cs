@@ -1,7 +1,7 @@
-﻿using SoftAPIClient.Example.Factories;
+﻿using SoftAPIClient.Example.Factories.GitHub;
 using SoftAPIClient.MetaData;
 
-namespace SoftAPIClient.Example.Interceptors
+namespace SoftAPIClient.Example.Interceptors.GitHub
 {
     public class GitHubAuthenticationRequestInterceptor : BaseGitHubRequestInterceptor
     {
