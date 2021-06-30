@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using SoftAPIClient.Core.Exceptions;
 
@@ -21,6 +22,7 @@ namespace SoftAPIClient.Example.Core
                 _configuration = new ConfigurationBuilder().SetBasePath(directory)
                     .AddJsonFile(fileName)
                     .AddEnvironmentVariables()
+                    .AddUserSecrets(Assembly.GetCallingAssembly())
                     .Build();
 
                 return _configuration;

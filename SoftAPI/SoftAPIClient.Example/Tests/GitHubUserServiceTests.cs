@@ -8,16 +8,16 @@ namespace SoftAPIClient.Example.Tests
     public class GitHubUserServiceTests : AbstractTest
     {
         [Test]
-        public void VerifyAttributeType()
+        public void VerifyGetCurrentUserData()
         {
             var response = GetService<IGitHubUserService>()
-                .GetCurrentUser(UserDataFactory.AuthorizationData)
+                .GetCurrentUser(GitHubDataFactory.AuthorizationData)
                 .Invoke();
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
             var body = response.Body;
-            Assert.AreEqual(UserDataFactory.Username, body.Login);
+            Assert.AreEqual(GitHubDataFactory.Username, body.Login);
             Assert.IsNotNull(body.Plan);
-            Assert.AreEqual(UserDataFactory.Plan, body.Plan.Name);
+            Assert.AreEqual(GitHubDataFactory.Plan, body.Plan.Name);
         }
     }
 }
