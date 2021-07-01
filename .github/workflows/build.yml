@@ -45,12 +45,20 @@ jobs:
     - name: Test
       shell: powershell
       run: $env:GitHub:Username = "${{ secrets.USER_NAME }}"; $env:GitHub:Token="${{ secrets.USER_TOKEN }}"; dotnet test SoftAPI/SoftAPI.sln --logger "trx;LogFileName=test-results.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    - name: Publish test-results
+    - name: Publish unit test-results
       uses: dorny/test-reporter@v1.5.0
-      if: success() || failure()    # run this step even if previous step failed
+      if: success() || failure()
       with:
-        name: QualityGate Tests
-        path: SoftAPI/*/TestResults/test-results.trx
+        name: QualityGate Unit Tests
+        path: SoftAPI/SoftAPIClient.Tests/TestResults/test-results.trx,SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/TestResults/test-results.trx
+        reporter: dotnet-trx
+        fail-on-error: true
+    - name: Publish automation test-results
+      uses: dorny/test-reporter@v1.5.0
+      if: success() || failure()
+      with:
+        name: QualityGate Automation Tests
+        path: SoftAPI/SoftAPIClient.Example/TestResults/test-results.trx
         reporter: dotnet-trx
         fail-on-error: true
     - name: Upload Coverage to Codecov
