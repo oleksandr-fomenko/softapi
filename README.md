@@ -1,5 +1,6 @@
 # SoftAPIClient
 A type-safe REST library for .NET Core.
+
 Give a Star! :star:
 If you liked the project or if SoftAPIClient helped you, please **give a star**. If you find any problem please open **issue**.
 
@@ -23,13 +24,11 @@ dotnet add package SoftAPIClient.RestSharpNewtonsoft
 ### Usage
 1. Declare interface with API contract:
 ```csharp
+[Client(Url = "https://postman-echo.com")]
+public interface IPostmanEchoRequestMethodsService
 {
-    [Client(Url = "https://postman-echo.com")]
-    public interface IPostmanEchoRequestMethodsService
-    {
-        [RequestMapping(Method.GET, Path = "/get")]
-        Func<ResponseGeneric<PostmanResponse>> Get([QueryParameter("foo1")] int foo1, [QueryParameter("foo2")] string foo2);
-    }
+    [RequestMapping(Method.GET, Path = "/get")]
+    Func<ResponseGeneric<PostmanResponse>> Get([QueryParameter("foo1")] int foo1, [QueryParameter("foo2")] string foo2);
 }
 ```
 2. Register at least one convertor (RestSharpNewtonsoft: [RestSharp](https://github.com/restsharp/RestSharp) + [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)):
@@ -48,21 +47,21 @@ public class GlobalSetup
 3. Fire your request:
 ```csharp
 public class TestClassExample
+{
+    [Test]
+    public void VerifyGet()
     {
-        [Test]
-        public void VerifyGet()
-        {
-            int foo1 = 42;
-            string foo2 = "foooooo";
-            var response = RestClient.Instance.GetService<IPostmanEchoRequestMethodsService>()
-                .Get(foo1, foo2)
-                .Invoke();
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
-            PostmanResponse body = response.Body;
-            Assert.AreEqual(foo1, body.Args.Foo1);
-            Assert.AreEqual(foo2, body.Args.Foo2);
-        }
+        int foo1 = 42;
+        string foo2 = "foooooo";
+        var response = RestClient.Instance.GetService<IPostmanEchoRequestMethodsService>()
+            .Get(foo1, foo2)
+            .Invoke();
+        Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+        PostmanResponse postmanResponseBody = response.Body;
+        Assert.AreEqual(foo1, postmanResponseBody.Args.Foo1);
+        Assert.AreEqual(foo2, postmanResponseBody.Args.Foo2);
     }
+}
 ```
 
 ### Interface Attributes
