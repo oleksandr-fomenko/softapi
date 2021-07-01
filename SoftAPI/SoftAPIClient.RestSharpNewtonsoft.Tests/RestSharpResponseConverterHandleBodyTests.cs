@@ -75,5 +75,27 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             var actualParameters = restRequest.Parameters;
             Assert.AreEqual(expectedParameters, actualParameters);
         }
+
+        [Test]
+        public void VerifyTextBodyHandling()
+        {
+            const string textBody = "TxtLad";
+
+            var expectedParameters = new List<Parameter>
+            {
+                new Parameter("text/plain", textBody, ParameterType.RequestBody)
+            };
+
+            var request = new Request
+            {
+                Body = new KeyValuePair<BodyType, object>(BodyType.Text, textBody)
+            };
+            var restRequest = new RestRequest(Method.GET);
+
+            HandleBody(request, restRequest);
+
+            var actualParameters = restRequest.Parameters;
+            Assert.AreEqual(expectedParameters, actualParameters);
+        }
     }
 }

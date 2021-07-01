@@ -95,6 +95,9 @@ namespace SoftAPIClient.RestSharpNewtonsoft
                     restRequest.RequestFormat = DataFormat.Xml;
                     restRequest.AddXmlBody(requestBody);
                     break;
+                case BodyType.Text:
+                    restRequest.AddParameter("text/plain", requestBody, ParameterType.RequestBody);
+                    break;
             }
         }
 
