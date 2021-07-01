@@ -3,6 +3,7 @@
     public enum BodyType
     {
         Json,
-        Xml
+        Xml,
+        Text
     }
 }

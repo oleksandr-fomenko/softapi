@@ -12,8 +12,8 @@
     <Description>A type-safe REST library</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>HttpClient,WebApi</PackageTags>
-    <Version>1.0.6</Version>
-    <AssemblyVersion>1.0.6.0</AssemblyVersion>
+    <Version>1.0.7</Version>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
