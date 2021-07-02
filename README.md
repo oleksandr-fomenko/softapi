@@ -73,13 +73,13 @@ SoftAPIClient attributes define the `Contract` between the interface and how to 
 | Attribute     | Target |IsMandatory | Usage | 
 |----------------|------------------|-------|-------|
 | `[Client]` | Interface           | `true`|  |
-| `[RequestMapping]` | Method        | `true`  |  |
-| `[Log]`       | Method        |`false`|  |
-| `[QueryParameter]`       | Parameter       | `false`|  |
-| `[FormDataParameter]`       | Parameter      | `false` |  |
-| `[HeaderParameter]`       | Parameter        |`false`|  |
-| `[PathParameter]`       | Parameter        |`false`|  |
-| `[ReplaceableParameter]`       | Parameter      |`false`  |  |
+| `[RequestMapping]` | Method        | `true`  | Consumes HTTP request `Method` of the resource as a mandatory parameter and a set of the optional parameters like relative URL `Path`, static `Headers`, specific `RequestInterceptor`, and `ResponseInterceptors`. |
+| `[Log]`       | Method        |`false`| Log message for a specific request which comes before sending the request. Has an option to specify indexes to refer to which args' values they want to inject into the log message. There is an implementation of the `IRestLogger` -> `RestLogger` for which it's possible to define a log level of this message. |
+| `[QueryParameter]`       | Parameter       | `false`| Consumes name (key) of the query parameter for the request.  |
+| `[FormDataParameter]`       | Parameter      | `false` | Consumes name (key) of the form-data parameter for the request.  |
+| `[HeaderParameter]`       | Parameter        |`false`| Consumes name (key) of the header parameter for the request.  |
+| `[PathParameter]`       | Parameter        |`false`| Consumes name (key) of the path parameter for the request which will be replaced in the Path via curly braces. `[PathParameter("pathId")]` -> /path/{pathId}  |
+| `[ReplaceableParameter]`       | Parameter      |`false`  | Special case of the Path parameter. Consumes name (key) of the url parameter for the request which will be replaced in the URL via curly braces. `[ReplaceableParameter("suiteId")]` -> /path/suite_id={suiteId} |
 | `[DynamicParameter]`       | Parameter       |`false` |  |
 | `[Body]`       | Parameter       |`false` |  |
 | `[Settings]`       | Parameter        |`false`|  |
