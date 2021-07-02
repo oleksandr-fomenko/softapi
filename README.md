@@ -1,5 +1,5 @@
 # SoftAPIClient
-A type-safe REST library for .NET Core 3.1.
+A type-safe REST library for .NET Core 3.1 witth object oriented approach.
 
 | Active Integrations | Status |
 |-|-|
@@ -13,7 +13,7 @@ A type-safe REST library for .NET Core 3.1.
 |*SoftAPIClient*|[![NuGet](https://img.shields.io/nuget/v/SoftAPIClient.svg)](https://www.nuget.org/packages/SoftAPIClient/) ![](https://img.shields.io/nuget/dt/SoftAPIClient)|
 |*SoftAPIClient.RestSharpNewtonsoft*|[![NuGet](https://img.shields.io/nuget/v/SoftAPIClient.RestSharpNewtonsoft.svg)](https://www.nuget.org/packages/SoftAPIClient.RestSharpNewtonsoft/) ![](https://img.shields.io/nuget/dt/SoftAPIClient.RestSharpNewtonsoft)|
 
-### Getting Started
+## Getting Started
 Core package:
 ```
 dotnet add package SoftAPIClient
@@ -22,7 +22,7 @@ Converter  (`SoftAPIClient.RestSharpNewtonsoft`: [RestSharp](https://github.com/
 ```
 dotnet add package SoftAPIClient.RestSharpNewtonsoft
 ```
-### Usage
+## Usage
 1. Declare interface with API contract:
 ```csharp
 [Client(Url = "https://postman-echo.com")]
@@ -64,6 +64,7 @@ public class TestClassExample
     }
 }
 ```
+## Features  Overview
 
 ### Interface Attributes
 
@@ -71,20 +72,39 @@ SoftAPIClient attributes define the `Contract` between the interface and how to 
 
 | Attribute     | Target |IsMandatory | Usage | 
 |----------------|------------------|-------|-------|
-| `@Client` | Interface           ||  |
-| `@RequestMapping` | Method        |   |  |
-| `@Log`       | Method        ||  |
-| `@QueryParameter`       | Parameter       | |  |
-| `@FormDataParameter`       | Parameter      |  |  |
-| `@HeaderParameter`       | Parameter        ||  |
-| `@PathParameter`       | Parameter        ||  |
-| `@ReplaceableParameter`       | Parameter      |  |  |
-| `@DynamicParameter`       | Parameter       | |  |
-| `@Body`       | Parameter       | |  |
-| `@Settings`       | Parameter        ||  |
+| `[Client]` | Interface           | `true`|  |
+| `[RequestMapping]` | Method        | `true`  |  |
+| `[Log]`       | Method        |`false`|  |
+| `[QueryParameter]`       | Parameter       | `false`|  |
+| `[FormDataParameter]`       | Parameter      | `false` |  |
+| `[HeaderParameter]`       | Parameter        |`false`|  |
+| `[PathParameter]`       | Parameter        |`false`|  |
+| `[ReplaceableParameter]`       | Parameter      |`false`  |  |
+| `[DynamicParameter]`       | Parameter       |`false` |  |
+| `[Body]`       | Parameter       |`false` |  |
+| `[Settings]`       | Parameter        |`false`|  |
 
+### Core Types
 
-### Examples
+| Type     | Target | Usage | 
+|----------------|------------------|-------|
+| `Response` | Type           |  |
+| `ResponseGeneric<T>` | Type        |     |
+| `ResponseGeneric2<T,T2>` | Type        |     |
+| `Request` | Type        |     |
+| `IResponseConverter` | Interface        |     |
+| `IInterceptor` | Interface        |     |
+| `IResponseInterceptor` | Interface        |     |
+| `IDynamicUrl` | Interface        |     |
+| `IDynamicParameter` | Interface        |     |
+| `IResponseDeserializer` | Interface        |     |
+| `IRestLogger` | Interface        |     |
+
+### Request/Response Interceptor usages
+
+### Logging
+
+## Examples
 For more details, please see [SoftAPIClient.Example](https://github.com/automation-solutions-set/softapi/tree/master/SoftAPI/SoftAPIClient.Example) project.
 
 ## License
