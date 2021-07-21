@@ -73,17 +73,17 @@ SoftAPIClient attributes define the `Contract` between the interface and how to 
 
 | Attribute     | Target |IsMandatory | Usage | 
 |----------------|------------------|-------|-------|
-| `[Client]` | Interface           | `true`|  |
+| `[Client]` | Interface           | `true`| Identifies that the represented interface might be instantiated by `SoftAPIClient`. Consumes optional `ResponseConverterType` parameter (as an implementation type of `IResponseConverter` interface registred for the client). Allows specifying `Url` as an immutable value or pair of `DynamicUrlKey` (as a key) + `DynamicUrlType` (as an implementation type of `IDynamicUrl` interface) for applying dynamic URL. Uses `Logger` (as an implementation type of `IRestLogger` interface) which overrides registered logger for the client if specified. |
 | `[RequestMapping]` | Method        | `true`  | Consumes HTTP request `Method` of the resource as a mandatory parameter and a set of the optional parameters like relative URL `Path`, static `Headers`, specific `RequestInterceptor`, and `ResponseInterceptors`. |
 | `[Log]`       | Method        |`false`| Log message for a specific request which comes before sending the request. Has an option to specify indexes to refer to which args' values they want to inject into the log message. There is an implementation of the `IRestLogger` -> `RestLogger` for which it's possible to define a log level of this message. |
-| `[QueryParameter]`       | Parameter       | `false`| Consumes name (key) of the query parameter for the request.  |
-| `[FormDataParameter]`       | Parameter      | `false` | Consumes name (key) of the form-data parameter for the request.  |
-| `[HeaderParameter]`       | Parameter        |`false`| Consumes name (key) of the header parameter for the request.  |
-| `[PathParameter]`       | Parameter        |`false`| Consumes name (key) of the path parameter for the request which will be replaced in the Path via curly braces. `[PathParameter("pathId")]` -> /path/{pathId}  |
-| `[ReplaceableParameter]`       | Parameter      |`false`  | Special case of the Path parameter. Consumes name (key) of the url parameter for the request which will be replaced in the URL via curly braces. `[ReplaceableParameter("suiteId")]` -> /path/suite_id={suiteId} |
-| `[DynamicParameter]`       | Parameter       |`false` |  |
-| `[Body]`       | Parameter       |`false` |  |
-| `[Settings]`       | Parameter        |`false`|  |
+| `[QueryParameter]`       | Parameter       | `false`| Consumes name (key) of the query parameter for the request. Applied only to primitives.  |
+| `[FormDataParameter]`       | Parameter      | `false` | Consumes name (key) of the form-data parameter for the request. Applied only to primitives.   |
+| `[HeaderParameter]`       | Parameter        |`false`| Consumes name (key) of the header parameter for the request. Applied only to primitives.   |
+| `[PathParameter]`       | Parameter        |`false`| Consumes name (key) of the path parameter for the request which will be replaced in the Path via curly braces. `[PathParameter("pathId")]` -> /path/{pathId}.  Applied only to primitives.  |
+| `[ReplaceableParameter]`       | Parameter      |`false`  | Special case of the Path parameter. Consumes name (key) of the url parameter for the request which will be replaced in the URL via curly braces. `[ReplaceableParameter("suiteId")]` -> /path/suite_id={suiteId}.  Applied only to primitives. |
+| `[DynamicParameter]`       | Parameter       |`false` |  Uses for the cases when request attribute is changeble parameter. Consumes `AttributeType` enum as a type of the request parameter if it's known on the compile time. Default value is `AttributeType.Undefined`. Applied only to `IDynamicParameter` object. |
+| `[Body]`       | Parameter       |`false` | Consumes `BodyType` enum as a identifier of the body content, default value is `BodyType.Json`. Applied to objects and primitives parameters.  |
+| `[Settings]`       | Parameter        |`false`| Defines that the following argument is `DynamicRequestSettings` object. |
 
 ### Core Types
 
