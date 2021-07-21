@@ -4,7 +4,7 @@ using SoftAPIClient.Example.Services.Postman;
 
 namespace SoftAPIClient.Example.Tests.Postman
 {
-    public class PostmanRequestMethods : AbstractTest
+    public class PostmanRequestMethodsTests : AbstractTest
     {
         [Test]
         public void VerifyPostTextBody()
