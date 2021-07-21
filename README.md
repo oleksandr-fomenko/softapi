@@ -24,13 +24,43 @@ Converter  (`SoftAPIClient.RestSharpNewtonsoft`: [RestSharp](https://github.com/
 dotnet add package SoftAPIClient.RestSharpNewtonsoft
 ```
 ## Usage
+0. Define request/response API models:
+```csharp
+public class PostmanResponse
+{
+    [JsonProperty("args")]
+    public PostmanArgs Args { get; set; }
+    [JsonProperty("headers")]
+    public IDictionary<string, string> Headers { get; set; }
+}
+public class PostmanArgs
+{
+    [JsonProperty("foo1")]
+    public int Foo1 { get; set; }
+    [JsonProperty("foo2")]
+    public string Foo2 { get; set; }
+}
+public class CustomDynamicHeader : DynamicParameter
+{
+    public CustomDynamicHeader(string headerName, string headerValue)
+    {
+        var currentUtcTimeTicks = DateTime.UtcNow.Ticks;
+        var headerNameModified = $"{headerName}-{currentUtcTimeTicks}";
+        var headerValueModified = $"{headerValue}-{currentUtcTimeTicks}";
+
+        AttributeType = AttributeType.Header;
+        Name = headerNameModified;
+        Value = headerValueModified;
+    }
+}
+```
 1. Declare interface with API contract:
 ```csharp
 [Client(Url = "https://postman-echo.com")]
 public interface IPostmanEchoRequestMethodsService
 {
     [RequestMapping(Method.GET, Path = "/get")]
-    Func<ResponseGeneric<PostmanResponse>> Get([QueryParameter("foo1")] int foo1, [QueryParameter("foo2")] string foo2);
+    Func<ResponseGeneric<PostmanResponse>> Get([QueryParameter("foo1")] int foo1, [QueryParameter("foo2")] string foo2,  [DynamicParameter] IDynamicParameter foo3Dynamic);
 }
 ```
 2. Register at least one convertor:
@@ -53,15 +83,29 @@ public class TestClassExample
     [Test]
     public void VerifyGet()
     {
+        //define input data
         int foo1 = 42;
         string foo2 = "foooooo";
-        var response = RestClient.Instance.GetService<IPostmanEchoRequestMethodsService>()
-            .Get(foo1, foo2)
+        string headerNamePrefix = "some-header-name";
+        string headerValuePrefix = "some-header-value";
+        IDynamicParameter foo3Dynamic = new CustomDynamicHeader(headerNamePrefix, headerValuePrefix);
+        
+        //fire request
+        ResponseGeneric<PostmanResponse> response = RestClient.Instance
+            .GetService<IPostmanEchoRequestMethodsService>()
+            .Get(foo1, foo2, foo3Dynamic)
             .Invoke();
+        
+        //verify response    
         Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
         PostmanResponse postmanResponseBody = response.Body;
         Assert.AreEqual(foo1, postmanResponseBody.Args.Foo1);
         Assert.AreEqual(foo2, postmanResponseBody.Args.Foo2);
+        
+        IDictionary<string, string> actualHeaders = postmanResponseBody.Headers;
+        Assert.NotNull(actualHeaders);
+        Assert.True(actualHeaders.Any(h => h.Key.StartsWith(headerNamePrefix)));
+        Assert.True(actualHeaders.Any(h => h.Value.StartsWith(headerValuePrefix)));
     }
 }
 ```
@@ -89,17 +133,17 @@ SoftAPIClient attributes define the `Contract` between the interface and how to 
 
 | Type     | Target | Usage | 
 |----------------|------------------|-------|
-| `Response` | Type           |  |
-| `ResponseGeneric<T>` | Type        |     |
-| `ResponseGeneric2<T,T2>` | Type        |     |
-| `Request` | Type        |     |
-| `IResponseConverter` | Interface        |     |
-| `IInterceptor` | Interface        |     |
-| `IResponseInterceptor` | Interface        |     |
-| `IDynamicUrl` | Interface        |     |
-| `IDynamicParameter` | Interface        |     |
-| `IResponseDeserializer` | Interface        |     |
-| `IRestLogger` | Interface        |     |
+| `Response` | Type           | Core response entity of the HTTP request. |
+| `ResponseGeneric<T>` | Type        |  The response entity of the HTTP request is parameterized with a specific body type.   |
+| `ResponseGeneric2<T,T2>` | Type        |  The response entity of the HTTP request is parameterized by 2 body types.    |
+| `Request` | Type        |  Core HTTP request entity, formed from request mapping by `RequestFactory` class.  |
+| `IResponseConverter` | Interface        |  Creates obligation on how to the `Func<Request>` should be converter to the `Response` object.  |
+| `IInterceptor` | Interface        |  Defines which `Request` data should be applied before making the HTTP request.  |
+| `IResponseInterceptor` | Interface        |  Defines how `Response` data should be handled after receiving the HTTP response.   |
+| `IDynamicUrl` | Interface        | Returns string value of the URL by input string key. |
+| `IDynamicParameter` | Interface        |  Defines data of the request dynamic parameter, defined at runtime.  |
+| `IResponseDeserializer` | Interface        |   Determines how to convert incoming string response to the specified generic type.  |
+| `IRestLogger` | Interface        |  Defines how to log message which is defined in `Log` attribute, log `Request`, and `Response` data. See `RestLogger` as a default implementation of `IRestLogger` interface.   |
 
 ### Request/Response Interceptor usages
 
