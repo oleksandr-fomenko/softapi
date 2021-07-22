@@ -60,7 +60,9 @@ public class CustomDynamicHeader : DynamicParameter
 public interface IPostmanEchoRequestMethodsService
 {
     [RequestMapping(Method.GET, Path = "/get")]
-    Func<ResponseGeneric<PostmanResponse>> Get([QueryParameter("foo1")] int foo1, [QueryParameter("foo2")] string foo2,  [DynamicParameter] IDynamicParameter foo3Dynamic);
+    Func<ResponseGeneric<PostmanResponse>> Get([QueryParameter("foo1")] int foo1, 
+        [QueryParameter("foo2")] string foo2,  
+        [DynamicParameter] IDynamicParameter foo3Dynamic);
 }
 ```
 2. Register at least one convertor:
