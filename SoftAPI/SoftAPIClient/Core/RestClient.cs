@@ -161,7 +161,7 @@ namespace SoftAPIClient.Core
                 () => arguments.Length == parameters.Length,
             };
 
-            bool baseChecksPassed = conditionList.All(c => c.Invoke());
+            var baseChecksPassed = conditionList.All(c => c.Invoke());
 
             if (!baseChecksPassed)
             {
@@ -178,7 +178,7 @@ namespace SoftAPIClient.Core
                 return p.Key == p.Value || p.Key.IsAssignableFrom(p.Value);
             });
 
-            return baseChecksPassed && allParametersMatched;
+            return allParametersMatched;
         }
 
         private void OverrideLoggerFromClient(RequestFactory requestFactory)
