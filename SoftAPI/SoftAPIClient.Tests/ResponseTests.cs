@@ -48,6 +48,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(responseBodyString, response.ResponseBodyString);
             Assert.AreEqual(elapsedTime, response.ElapsedTime);
             Assert.AreEqual(deserializer, response.Deserializer);
+            Assert.AreEqual(responseBodyString, response.ToString());
         }
 
         [Test]
@@ -65,6 +66,7 @@ namespace SoftAPIClient.Tests
             Assert.IsNull(response.ResponseBodyString);
             Assert.AreEqual(0L, response.ElapsedTime);
             Assert.IsNull(response.Deserializer);
+            Assert.AreEqual(string.Empty, response.ToString());
         }
 
         [Test]

@@ -19,5 +19,9 @@ namespace SoftAPIClient.MetaData
         {
             return Deserializer != null ? Deserializer.Convert<T>(ResponseBodyString) : default;
         }
+        public override string ToString()
+        {
+            return ResponseBodyString ?? string.Empty;
+        }
     }
 }
