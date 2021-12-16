@@ -183,7 +183,7 @@ namespace SoftAPIClient.Core
 
         private void OverrideLoggerFromClient(RequestFactory requestFactory)
         {
-            if (_logger == null)
+            if (requestFactory.Logger != null)
             {
                 _logger = requestFactory.Logger;
             }
