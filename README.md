@@ -1,5 +1,5 @@
 # SoftAPIClient
-A type-safe REST library for .NET Core 3.1 with object oriented approach.
+A type-safe REST library for .NET Core 3.1+ with object oriented approach.
 
 | Active Integrations | Status |
 |-|-|
