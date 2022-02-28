@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SoftAPIClient.Core;
 using SoftAPIClient.Core.Interfaces;
 using SoftAPIClient.MetaData;
 
@@ -50,7 +51,7 @@ namespace SoftAPIClient.Implementations
             {
                 message.AppendLine($"Body: Type - '{request.Body.Key};, Value:");
                 message.AppendLine();
-                message.AppendLine($"{request.Body.Value}");
+                message.AppendLine($"{Utils.HandleToStringIfList(request.Body.Value)}");
             }
             message.AppendLine();
             message.AppendLine("--- Request Data end ---");

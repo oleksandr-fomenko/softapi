@@ -183,7 +183,7 @@ namespace SoftAPIClient.Core
 
         private void OverrideLoggerFromClient(RequestFactory requestFactory)
         {
-            if (requestFactory.Logger != null)
+            if (_logger == null)
             {
                 _logger = requestFactory.Logger;
             }
@@ -223,7 +223,8 @@ namespace SoftAPIClient.Core
             var message = logAttr.Value;
             try
             {
-                return string.Format(message, arguments);
+                var args = arguments?.Select(Utils.HandleToStringIfList).ToArray();
+                return string.Format(message, args);
             }
             catch (Exception)
             {
