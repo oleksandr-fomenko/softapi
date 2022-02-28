@@ -47,11 +47,12 @@ namespace SoftAPIClient.Implementations
                 message.AppendLine();
             }
 
-            if (request.Body.Value != null)
+            var bodyValue = request.Body.Value;
+            if (bodyValue != null)
             {
                 message.AppendLine($"Body: Type - '{request.Body.Key};, Value:");
                 message.AppendLine();
-                message.AppendLine($"{Utils.HandleToStringIfList(request.Body.Value)}");
+                message.AppendLine($"{Utils.HandleToStringIfList(bodyValue)}");
             }
             message.AppendLine();
             message.AppendLine("--- Request Data end ---");
