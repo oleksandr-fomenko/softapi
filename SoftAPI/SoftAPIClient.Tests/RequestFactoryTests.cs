@@ -280,6 +280,9 @@ namespace SoftAPIClient.Tests
         [RequestMapping("GET", Path = "/path/all")]
         Func<Response> GetAll();
 
+        [RequestMapping("GET", Path = "/path/all")]
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> GetAllGeneric();
+
         [RequestMapping("GET", Headers = new[] { "x-api-key+123" })]
         Func<Response> GetInvalidHeaderFormat();
 

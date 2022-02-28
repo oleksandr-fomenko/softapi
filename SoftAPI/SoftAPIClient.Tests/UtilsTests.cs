@@ -347,5 +347,30 @@ namespace SoftAPIClient.Tests
             Utils.RemoveDuplicates(input);
             Assert.AreEqual(expectedList, input);
         }
+
+        [TestCaseSource(nameof(GetTestDataForHandleToStringIfList))]
+        public void VerifyHandleToStringIfList(KeyValuePair<object, string> inputData)
+        {
+            var (input, expectedResult) = inputData;
+
+            var actualResult = Utils.HandleToStringIfList(input);
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        private static IEnumerable<KeyValuePair<object, string>> GetTestDataForHandleToStringIfList()
+        {
+            yield return new KeyValuePair<object, string>(null, null);
+            yield return new KeyValuePair<object, string>("foo", "foo");
+            const string name = ""; 
+            const int age = 15;
+            var user = new ResponseTests.UserJsonDto {Name = name, Age = age};
+            yield return new KeyValuePair<object, string>(user, user.ToString());
+            yield return new KeyValuePair<object, string>(new List<object>{ user }, $"[{user}]");
+            yield return new KeyValuePair<object, string>(new List<object>{ user, user }, $"[{user},{user}]");
+           
+            yield return new KeyValuePair<object, string>(new List<object> { new List<object>{ user } }, $"[[{user}]]");
+            yield return new KeyValuePair<object, string>(new List<object> { user, new List<object> { user } }, $"[{user},[{user}]]");
+            yield return new KeyValuePair<object, string>(new List<object> { new List<object> { user, user }, new List<object> { user } }, $"[[{user},{user}],[{user}]]");
+        }
     }
 }
