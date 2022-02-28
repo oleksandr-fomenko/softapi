@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using SoftAPIClient.Attributes.Base;
+using System.Collections;
 
 namespace SoftAPIClient.Core
 {
@@ -86,6 +87,27 @@ namespace SoftAPIClient.Core
         public static void MergeCollectionToList(List<KeyValuePair<string, string>> result, IEnumerable<KeyValuePair<string, string>> input)
         {
             result.AddRange(input);
+        }
+
+        public static string HandleToStringIfList(object input)
+        {
+            if (input == null)
+            {
+                return null;
+            }
+
+            if (input is IList enumerable)
+            {
+                var result = "[";
+                foreach (var item in enumerable)
+                {
+                    result += item;
+                    result += ",";
+                }
+                return result.Remove(result.Length - 1) + "]";
+            }
+
+            return input.ToString();
         }
     }
 }
