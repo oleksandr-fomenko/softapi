@@ -59,6 +59,32 @@ namespace SoftAPIClient.Tests
         }
 
         [Test, Order(3)]
+        public void VerifyGetAllRequestGenericWhenNoLoggerForRestClient()
+        {
+            var response = new Response
+            {
+                HttpStatusCode = HttpStatusCode.OK,
+                ResponseUri = new Uri("http://localhost:8080/api/{path_interceptor_param}/path/all"),
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                Cookies = new List<KeyValuePair<string, string>>(),
+                ContentType = "application/json",
+                OriginalResponse = null,
+                ResponseBodyString = null,
+                ElapsedTime = 1000
+            };
+
+            var expectedResponse = new ResponseGeneric<ResponseTests.UserJsonDto>(response);
+
+            RestClient.Instance.AddResponseConvertor(new FakeResponseConverter());
+            var actualResponse = RestClient.Instance.GetService<ITestInterfaceValid>().GetAllGeneric().Invoke();
+
+            VerifyResponses(expectedResponse, actualResponse);
+        }
+
+        [Test, Order(3)]
         public void VerifyGetWithTestResponseWhenResultObjectIsDescendantOfResponse()
         {
             var response = new Response
