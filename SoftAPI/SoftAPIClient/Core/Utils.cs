@@ -101,7 +101,7 @@ namespace SoftAPIClient.Core
                 var result = "[";
                 foreach (var item in enumerable)
                 {
-                    result += item;
+                    result += HandleToStringIfList(item);
                     result += ",";
                 }
                 return result.Remove(result.Length - 1) + "]";
