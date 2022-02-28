@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Linq;
 using SoftAPIClient.Attributes.Base;
 using System.Collections;
+using System.Text;
 
 namespace SoftAPIClient.Core
 {
@@ -98,12 +99,13 @@ namespace SoftAPIClient.Core
 
             if (input is IList enumerable)
             {
-                var result = "[";
+                var sb = new StringBuilder("[");
                 foreach (var item in enumerable)
                 {
-                    result += HandleToStringIfList(item);
-                    result += ",";
+                    sb.Append(HandleToStringIfList(item));
+                    sb.Append(",");
                 }
+                var result = sb.ToString();
                 return result.Remove(result.Length - 1) + "]";
             }
 
