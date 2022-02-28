@@ -188,6 +188,41 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual($"Send POST request to 'Nowhere' for unitTesting with the next parameters: Authorization=Bearer foo, Body={body}", loggingDictionary[RestLoggerTests.BeforeConstKey]);
         }
 
+        [Test, Order(7)]
+        public void VerifyPostRequestWhenNullableParametersAreSent()
+        {
+            var loggingDictionary = new Dictionary<string, string>();
+            var restLogger = new RestLogger(s => loggingDictionary.Add(RestLoggerTests.BeforeConstKey, s),
+                s => loggingDictionary.Add(RestLoggerTests.RequestConstKey, s),
+                s => loggingDictionary.Add(RestLoggerTests.ResponseConstKey, s));
+            RestClient.Instance.SetLogger(restLogger);
+
+            var response = new Response
+            {
+                HttpStatusCode = HttpStatusCode.OK,
+                ResponseUri = new Uri("http://localhost:8080/api/{path_interceptor_param}/path"),
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("x-api-key", "123"),
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                Cookies = new List<KeyValuePair<string, string>>(),
+                ContentType = "application/json",
+                OriginalResponse = null,
+                ResponseBodyString = null,
+                ElapsedTime = 1000
+            };
+
+            var expectedResponse = new ResponseGeneric<ResponseTests.UserJsonDto>(response);
+
+            RestClient.Instance.AddResponseConvertor(new FakeResponseConverter());
+            var actualResponse = RestClient.Instance.GetService<ITestInterfaceValid>().Post(null, null).Invoke();
+
+            VerifyResponses(expectedResponse, actualResponse);
+            Assert.IsTrue(loggingDictionary.ContainsKey(RestLoggerTests.BeforeConstKey));
+            Assert.AreEqual($"Send POST request to 'Nowhere' for unitTesting with the next parameters: Authorization=, Body=", loggingDictionary[RestLoggerTests.BeforeConstKey]);
+        }
+
         private void VerifyResponses(Response expectedResponse, Response actualResponse)
         {
             Assert.AreEqual(expectedResponse.HttpStatusCode, actualResponse.HttpStatusCode);
