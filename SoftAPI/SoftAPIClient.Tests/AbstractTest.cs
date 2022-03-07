@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
 
 namespace SoftAPIClient.Tests
@@ -21,6 +22,19 @@ namespace SoftAPIClient.Tests
                 return File.ReadAllText(fullFileName);
             }
             throw new Exception($"Cannot find file by specified pathname: {fullFileName}");
+        }
+
+        protected byte[] SerializeToBytes<T>(T e)
+        {
+            using var stream = new MemoryStream();
+            new BinaryFormatter().Serialize(stream, e);
+            return stream.GetBuffer();
+        }
+
+        protected T DeserializeFromBytes<T>(byte[] bytes)
+        {
+            using var stream = new MemoryStream(bytes);
+            return (T)new BinaryFormatter().Deserialize(stream);
         }
     }
 }

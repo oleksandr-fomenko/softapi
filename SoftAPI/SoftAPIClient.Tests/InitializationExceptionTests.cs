@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SoftAPIClient.Core.Exceptions;
 
 namespace SoftAPIClient.Tests
@@ -16,22 +14,9 @@ namespace SoftAPIClient.Tests
             var bytes = SerializeToBytes(exception);
             Assert.True(bytes.Length > 0);
 
-            var result = DeserializeFromBytes(bytes);
+            var result = DeserializeFromBytes<InitializationException>(bytes);
             Assert.AreEqual(Message, result.Message);
             Assert.Null(result.InnerException);
-        }
-
-        private static byte[] SerializeToBytes(InitializationException e)
-        {
-            using var stream = new MemoryStream();
-            new BinaryFormatter().Serialize(stream, e);
-            return stream.GetBuffer();
-        }
-
-        private static InitializationException DeserializeFromBytes(byte[] bytes)
-        {
-            using var stream = new MemoryStream(bytes);
-            return (InitializationException)new BinaryFormatter().Deserialize(stream);
         }
     }
 }
