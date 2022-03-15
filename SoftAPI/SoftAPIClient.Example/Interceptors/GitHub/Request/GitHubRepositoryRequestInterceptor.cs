@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using SoftAPIClient.Core.Interfaces;
 using SoftAPIClient.Example.Factories.GitHub;
-using SoftAPIClient.MetaData;
 
-namespace SoftAPIClient.Example.Interceptors.GitHub
+namespace SoftAPIClient.Example.Interceptors.GitHub.Request
 {
     public class GitHubRepositoryRequestInterceptor : IInterceptor
     {
-        public Request Intercept()
+        public MetaData.Request Intercept()
         {
-            return new Request
+            return new MetaData.Request
             {
                 PathParameters = new Dictionary<string, object>
                 {
