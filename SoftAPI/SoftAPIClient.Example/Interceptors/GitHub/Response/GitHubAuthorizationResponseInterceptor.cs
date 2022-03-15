@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using SoftAPIClient.Core.Interfaces;
 
 namespace SoftAPIClient.Example.Interceptors.GitHub.Response
@@ -7,7 +8,10 @@ namespace SoftAPIClient.Example.Interceptors.GitHub.Response
     {
         public void ProcessResponse(MetaData.Response response)
         {
-            throw new NotImplementedException();
+            if (HttpStatusCode.Unauthorized == response.HttpStatusCode)
+            {
+                throw new Exception($"Provided authorization data is invalid. Details: {response.ResponseBodyString}");
+            }
         }
     }
 }
