@@ -156,6 +156,61 @@ There is 2 types of the interceptors which applied in the next order:
 
 Please see the example below.
 Request/Response interceptors:
+```csharp
+public class BaseGitHubRequestInterceptor : IInterceptor
+{
+    public virtual MetaData.Request Intercept()
+    {
+        return new MetaData.Request
+        {
+            Headers = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("Accept", "application/vnd.github.inertia-preview+json") }
+        };
+    }
+}
+
+public class GitHubAuthenticationRequestInterceptor : BaseGitHubRequestInterceptor
+{
+    public override MetaData.Request Intercept()
+    {
+        var baseRequest = base.Intercept();
+        baseRequest.Headers.Add(GitHubDataFactory.AuthorizationData.GetValue());
+        return baseRequest;
+    }
+}
+
+public class GitHubAuthorizationResponseInterceptor : IResponseInterceptor
+{
+    public void ProcessResponse(MetaData.Response response)
+    {
+        if (HttpStatusCode.Unauthorized == response.HttpStatusCode)
+        {
+            throw new Exception($"Provided authorization data is invalid. Details: {response.ResponseBodyString}");
+        }
+    }
+}
+
+public class GitHubInternalServerErrorResponseInterceptor : IResponseInterceptor
+{
+    public void ProcessResponse(MetaData.Response response)
+    {
+        if (HttpStatusCode.InternalServerError == response.HttpStatusCode)
+        {
+            throw new Exception($"Internal Server Error. Details: {response.ResponseBodyString}");
+        }
+    }
+}
+
+public class GitHubServiceUnavailableResponseInterceptor : IResponseInterceptor
+{
+    public void ProcessResponse(MetaData.Response response)
+    {
+        if (HttpStatusCode.ServiceUnavailable == response.HttpStatusCode)
+        {
+            throw new Exception($"Service Unavailable. Details: {response.ResponseBodyString}");
+        }
+    }
+}
+```
 
 ### Logging
 
