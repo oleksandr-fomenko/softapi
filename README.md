@@ -149,7 +149,139 @@ SoftAPIClient attributes define the `Contract` between the interface and how to 
 
 ### Request/Response Interceptor usages
 
+Request/Response Interceptors provide features to modify request data or handle response.
+There is 2 types of the interceptors which applied in the next order:
+1. `Client` interceptor - utilized for **ALL** methods in the service.
+2. `RequestMapping` interceptor - utilized for specific method.
+
+Please see the example below.
+Request/Response interceptors:
+```csharp
+public class BaseGitHubRequestInterceptor : IInterceptor
+{
+    public virtual MetaData.Request Intercept()
+    {
+        return new MetaData.Request
+        {
+            Headers = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("Accept", "application/vnd.github.inertia-preview+json") }
+        };
+    }
+}
+
+public class GitHubAuthenticationRequestInterceptor : BaseGitHubRequestInterceptor
+{
+    public override MetaData.Request Intercept()
+    {
+        var baseRequest = base.Intercept();
+        baseRequest.Headers.Add(GitHubDataFactory.AuthorizationData.GetValue());
+        return baseRequest;
+    }
+}
+
+public class GitHubAuthorizationResponseInterceptor : IResponseInterceptor
+{
+    public void ProcessResponse(MetaData.Response response)
+    {
+        if (HttpStatusCode.Unauthorized == response.HttpStatusCode)
+        {
+            throw new Exception($"Provided authorization data is invalid. Details: {response.ResponseBodyString}");
+        }
+    }
+}
+
+public class GitHubInternalServerErrorResponseInterceptor : IResponseInterceptor
+{
+    public void ProcessResponse(MetaData.Response response)
+    {
+        if (HttpStatusCode.InternalServerError == response.HttpStatusCode)
+        {
+            throw new Exception($"Internal Server Error. Details: {response.ResponseBodyString}");
+        }
+    }
+}
+
+public class GitHubServiceUnavailableResponseInterceptor : IResponseInterceptor
+{
+    public void ProcessResponse(MetaData.Response response)
+    {
+        if (HttpStatusCode.ServiceUnavailable == response.HttpStatusCode)
+        {
+            throw new Exception($"Service Unavailable. Details: {response.ResponseBodyString}");
+        }
+    }
+}
+```
+Usages:
+```csharp
+[Client(DynamicUrlKey = "GitHub:Api", Path = "/repos", DynamicUrlType = typeof(DynamicConfiguration),
+    RequestInterceptor = typeof(GitHubAuthenticationRequestInterceptor),
+    ResponseInterceptors = new[] { typeof(GitHubAuthorizationResponseInterceptor)} )]
+public interface IGitHubRepositoryProjectService
+{
+    [Log("Send GET request to 'GitHub API' for getting projects list for the owner={0} and repository={1}")]
+    [RequestMapping(Method.GET, Path = "/{owner}/{repo}/projects")]
+    Func<ResponseGeneric2<List<GitHubResponse>, GitHubErrorResponse>> GetProjects([PathParameter("owner")] string owner, [PathParameter("repo")] string repository);
+
+    [Log("Send GET request to 'GitHub API' for getting current user-data")]
+    [RequestMapping(Method.GET, Path = "/{owner}/{repo}/projects", RequestInterceptor = typeof(GitHubRepositoryRequestInterceptor))]
+    Func<ResponseGeneric<List<GitHubResponse>>> GetProjects();
+
+    [Log("Send POST request to 'GitHub API' for creating a next project={0}")]
+    [RequestMapping(Method.POST, Path = "/{owner}/{repo}/projects", RequestInterceptor = typeof(GitHubRepositoryRequestInterceptor),
+        ResponseInterceptors = new[] { typeof(GitHubInternalServerErrorResponseInterceptor), typeof(GitHubServiceUnavailableResponseInterceptor) })]
+    Func<ResponseGeneric<GitHubResponse>> CreateRepositoryProject([Body] GitHubBodyRequest body);
+}
+```
+Invocation order of `IGitHubRepositoryProjectService` methods:
+**`GetProjects(owner,repo)`**:
+1. `GitHubAuthenticationRequestInterceptor`
+2. Request call of the method `GetProjects(owner,repo)`
+3. `GitHubAuthorizationResponseInterceptor`
+
+**`GetProjects()`**:
+1. `GitHubAuthenticationRequestInterceptor`
+2. `GitHubRepositoryRequestInterceptor`
+3. Request call of the method `GetProjects()`
+4. `GitHubAuthorizationResponseInterceptor`
+
+**`CreateRepositoryProject(body)`**:
+1. `GitHubAuthenticationRequestInterceptor`
+2. `GitHubRepositoryRequestInterceptor`
+3. Request call of the method `CreateRepositoryProject(body)`
+4. `GitHubAuthorizationResponseInterceptor`
+5. `GitHubInternalServerErrorResponseInterceptor`
+6. `GitHubServiceUnavailableResponseInterceptor`
+
 ### Logging
+1. Set generic Logger which will be applied to all services:
+```csharp
+[SetUpFixture]
+public class GlobalSetup
+{
+    [OneTimeSetUp]
+    public void OneTimeBaseSetup()
+    {
+        RestClient.Instance
+            .AddResponseConvertor(new RestSharpResponseConverter())
+            .SetLogger(new RestLogger(
+                    m => log.Info(m),
+                    m => log.Debug(m),
+                    m => log.Debug(m))
+                );
+    }
+}
+```
+2. Override generic Logger for the specific Service. In this case represented logger must have constructor without any parameters!
+```csharp
+[Client(Url = "https://postman-echo.com", Logger = typeof(CustomRestLogger))]
+public interface IPostmanEchoRequestMethodsService
+{
+    [RequestMapping(Method.GET, Path = "/get")]
+    Func<ResponseGeneric<PostmanResponse>> Get([QueryParameter("foo1")] int foo1, 
+        [QueryParameter("foo2")] string foo2,  
+        [DynamicParameter] IDynamicParameter foo3Dynamic);
+}
+```
 
 ## Examples
 For more details, please see [SoftAPIClient.Example](https://github.com/automation-solutions-set/softapi/tree/master/SoftAPI/SoftAPIClient.Example) project.
@@ -159,4 +291,4 @@ For more details, please see [SoftAPIClient.Example](https://github.com/automati
 
 Give a Star! :star:
 
-If you liked the project or if SoftAPIClient helped you, please **give a star**. If you would like to support the author - [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Doleksandrfomenko%26type%3Dpatrons&style=flat)](https://patreon.com/oleksandrfomenko).
+If you liked the project or if SoftAPIClient helped you, please **give a star**. If you would like to support the author - [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Doleksandrfomenko%26type%3Dpatrons&style=flat)](https://patreon.com/oleksandrfomenko)

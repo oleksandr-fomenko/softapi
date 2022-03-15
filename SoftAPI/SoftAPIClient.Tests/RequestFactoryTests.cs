@@ -7,6 +7,7 @@ using SoftAPIClient.MetaData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SoftAPIClient.Implementations;
 
 namespace SoftAPIClient.Tests
 {
@@ -298,7 +299,7 @@ namespace SoftAPIClient.Tests
         Func<TestResponse> GetWithTestResponse();
     }
 
-    [Client(DynamicUrlKey = "http://localhost:8080", DynamicUrlType = typeof(TestDynamicUrl))]
+    [Client(DynamicUrlKey = "http://localhost:8080", DynamicUrlType = typeof(TestDynamicUrl), Logger = typeof(CustomRestLogger))]
     public interface ITestTestDynamicUrlInterface
     {
         [RequestMapping("GET", Path = "/path/all")]
@@ -344,6 +345,17 @@ namespace SoftAPIClient.Tests
         public string GetUrl(string key)
         {
             return key;
+        }
+    }
+
+    public class CustomRestLogger : RestLogger
+    {
+        public CustomRestLogger() : base(s => DoNothing(), s => DoNothing(), s => DoNothing())
+        {
+        }
+
+        private static void DoNothing()
+        {
         }
     }
 
