@@ -271,7 +271,17 @@ public class GlobalSetup
     }
 }
 ```
-
+2. Override generic Logger for the specific Service. In this case represented logger must have constructor without any parameters!
+```csharp
+[Client(Url = "https://postman-echo.com", Logger = typeof(CustomRestLogger))]
+public interface IPostmanEchoRequestMethodsService
+{
+    [RequestMapping(Method.GET, Path = "/get")]
+    Func<ResponseGeneric<PostmanResponse>> Get([QueryParameter("foo1")] int foo1, 
+        [QueryParameter("foo2")] string foo2,  
+        [DynamicParameter] IDynamicParameter foo3Dynamic);
+}
+```
 
 ## Examples
 For more details, please see [SoftAPIClient.Example](https://github.com/automation-solutions-set/softapi/tree/master/SoftAPI/SoftAPIClient.Example) project.
