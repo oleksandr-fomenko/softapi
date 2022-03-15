@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using SoftAPIClient.Attributes;
 using SoftAPIClient.Example.Core;
-using SoftAPIClient.Example.Interceptors.GitHub;
+using SoftAPIClient.Example.Interceptors.GitHub.Request;
 using SoftAPIClient.Example.Models.GitHub;
 using SoftAPIClient.MetaData;
 

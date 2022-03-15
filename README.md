@@ -159,4 +159,4 @@ For more details, please see [SoftAPIClient.Example](https://github.com/automati
 
 Give a Star! :star:
 
-If you liked the project or if SoftAPIClient helped you, please **give a star**. If you find any problem please open **issue**.
+If you liked the project or if SoftAPIClient helped you, please **give a star**. If you would like to support the author - [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Doleksandrfomenko%26type%3Dpatrons&style=flat)](https://patreon.com/oleksandrfomenko).

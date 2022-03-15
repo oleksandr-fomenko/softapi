@@ -1,11 +1,10 @@
 ﻿using SoftAPIClient.Example.Factories.GitHub;
-using SoftAPIClient.MetaData;
 
-namespace SoftAPIClient.Example.Interceptors.GitHub
+namespace SoftAPIClient.Example.Interceptors.GitHub.Request
 {
     public class GitHubAuthenticationRequestInterceptor : BaseGitHubRequestInterceptor
     {
-        public override Request Intercept()
+        public override MetaData.Request Intercept()
         {
             var baseRequest = base.Intercept();
             baseRequest.Headers.Add(GitHubDataFactory.AuthorizationData.GetValue());
