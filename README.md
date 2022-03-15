@@ -149,6 +149,14 @@ SoftAPIClient attributes define the `Contract` between the interface and how to 
 
 ### Request/Response Interceptor usages
 
+Request/Response Interceptors provide features to modify request data or handle response.
+There is 2 types of the interceptors which applied in the next order:
+1. `Client` interceptor - utilized for **ALL** methods in the service.
+2. `RequestMapping` interceptor - utilized for specific method.
+
+Please see the example below.
+Request/Response interceptors:
+
 ### Logging
 
 ## Examples
