@@ -6,7 +6,6 @@ namespace SoftAPIClient.Example.Models.GitHub
     {
         [JsonProperty("name")]
         public string Name { get; set; }
-
         [JsonProperty("body")]
         public string Body { get; set; }
     }
