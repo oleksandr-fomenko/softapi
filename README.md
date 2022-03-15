@@ -235,6 +235,25 @@ Usages:
         Func<ResponseGeneric<GitHubResponse>> CreateRepositoryProject([Body] GitHubBodyRequest body);
     }
 ```
+Invocation order of `IGitHubRepositoryProjectService` methods:
+**`GetProjects(owner,repo)`**:
+1. `GitHubAuthenticationRequestInterceptor`
+2. Request call of the method `GetProjects(owner,repo)`
+3. `GitHubAuthorizationResponseInterceptor`
+
+**`GetProjects()`**:
+1. `GitHubAuthenticationRequestInterceptor`
+2. `GitHubRepositoryRequestInterceptor`
+3. Request call of the method `GetProjects()`
+4. `GitHubAuthorizationResponseInterceptor`
+
+**`CreateRepositoryProject(body)`**:
+1. `GitHubAuthenticationRequestInterceptor`
+2. `GitHubRepositoryRequestInterceptor`
+3. Request call of the method `CreateRepositoryProject(body)`
+4. `GitHubAuthorizationResponseInterceptor`
+5. `GitHubInternalServerErrorResponseInterceptor`
+6. `GitHubServiceUnavailableResponseInterceptor`
 
 ### Logging
 
