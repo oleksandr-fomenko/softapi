@@ -253,6 +253,25 @@ Invocation order of `IGitHubRepositoryProjectService` methods:
 6. `GitHubServiceUnavailableResponseInterceptor`
 
 ### Logging
+1. Set generic Logger which will be applied to all services:
+```csharp
+[SetUpFixture]
+public class GlobalSetup
+{
+    [OneTimeSetUp]
+    public void OneTimeBaseSetup()
+    {
+        RestClient.Instance
+            .AddResponseConvertor(new RestSharpResponseConverter())
+            .SetLogger(new RestLogger(
+                    m => log.Info(m),
+                    m => log.Debug(m),
+                    m => log.Debug(m))
+                );
+    }
+}
+```
+
 
 ## Examples
 For more details, please see [SoftAPIClient.Example](https://github.com/automation-solutions-set/softapi/tree/master/SoftAPI/SoftAPIClient.Example) project.
