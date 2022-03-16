@@ -310,6 +310,46 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(expectedRequest, actualRequest);
         }
 
+        [Test]
+        public void VerifyPatchRequestWhenDynamicParameterIsHeader()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "Patch";
+            var dynamicParameter = new DynamicParameter(AttributeType.Header, "dynamic-replaceable-header", "dynamic-replaceable-header-value");
+            var arguments = new object[] { "1", dynamicParameter };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/1/{dynamicReplaceable}",
+
+                Method = "PATCH",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value"),
+                    new KeyValuePair<string, string>("dynamic-replaceable-header", "dynamic-replaceable-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+            Assert.IsNotNull(requestFactory.ResponseInterceptors);
+            Assert.IsNotEmpty(requestFactory.ResponseInterceptors);
+        }
+
         public static TestDeserializer GetDeserializer()
         {
             if(_testDeserializer == null)
