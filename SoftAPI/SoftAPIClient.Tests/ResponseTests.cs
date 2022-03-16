@@ -68,6 +68,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(0L, response.ElapsedTime);
             Assert.IsNull(response.Deserializer);
             Assert.AreEqual(string.Empty, response.ToString());
+            Assert.IsNull(response.GetEntity<UserJsonDto>());
         }
 
         [Test]
