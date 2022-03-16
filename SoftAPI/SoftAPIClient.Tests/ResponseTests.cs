@@ -23,7 +23,7 @@ namespace SoftAPIClient.Tests
             var originalResponse = new object();
             const string responseBodyString = "{\"name\":\"Ivan\",\"age\":18}";
             const int elapsedTime = 1000;
-            IResponseDeserializer deserializer = null;
+            IResponseDeserializer deserializer = RequestFactoryTests.GetDeserializer();
             var response = new Response
             {
                 HttpStatusCode = httpStatusCode,
@@ -49,6 +49,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(elapsedTime, response.ElapsedTime);
             Assert.AreEqual(deserializer, response.Deserializer);
             Assert.AreEqual(responseBodyString, response.ToString());
+            Assert.IsNull(response.GetEntity<UserJsonDto>());
         }
 
         [Test]
@@ -67,6 +68,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(0L, response.ElapsedTime);
             Assert.IsNull(response.Deserializer);
             Assert.AreEqual(string.Empty, response.ToString());
+            Assert.IsNull(response.GetEntity<UserJsonDto>());
         }
 
         [Test]

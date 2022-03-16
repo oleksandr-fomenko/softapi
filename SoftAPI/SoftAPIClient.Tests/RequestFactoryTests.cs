@@ -572,7 +572,7 @@ namespace SoftAPIClient.Tests
         {
             return new Request
             {
-                Deserializer = RequestFactoryTests.GetDeserializer(),
+                Deserializer = RequestFactoryTests.GetDeserializer()
             };
         }
     }
