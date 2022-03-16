@@ -157,6 +157,7 @@ namespace SoftAPIClient.Tests
 
             var expectedRequest = new Request
             {
+                Deserializer = GetDeserializer(),
                 Url = "http://localhost:8080/api/{path_interceptor_param}/path/all",
                 Method = "GET",
                 Headers = new List<KeyValuePair<string, string>>
@@ -346,7 +347,7 @@ namespace SoftAPIClient.Tests
     [Client(typeof(FakeResponseConverter), Url = "http://localhost:8080", Path = "/api/{path_interceptor_param}", RequestInterceptor = typeof(TestRequestInterceptor), ResponseInterceptors = new []{typeof(TestResponseInterceptor) }) ]
     public interface ITestInterfaceValid
     {
-        [RequestMapping("GET", Path = "/path/all")]
+        [RequestMapping("GET", Path = "/path/all", RequestInterceptor = typeof(TestRequestSpecificInterceptor))]
         Func<Response> GetAll();
 
         [RequestMapping("GET", Path = "/path/all")]
@@ -404,6 +405,17 @@ namespace SoftAPIClient.Tests
                 {
                     { "formData_interceptor_param",  "x"}
                 }
+            };
+        }
+    }
+
+    public class TestRequestSpecificInterceptor : IInterceptor
+    {
+        public Request Intercept()
+        {
+            return new Request
+            {
+                Deserializer = RequestFactoryTests.GetDeserializer(),
             };
         }
     }
