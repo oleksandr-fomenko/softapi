@@ -315,12 +315,50 @@ namespace SoftAPIClient.Tests
         {
             var targetInterface = typeof(ITestInterfaceValid);
             const string methodName = "Patch";
-            var dynamicParameter = new DynamicParameter(AttributeType.Header, "dynamic-replaceable-header", null);
-            var arguments = new object[] { "1", dynamicParameter };
+            var arguments = new object[] { "1", null };
 
             var expectedRequest = new Request
             {
                 Url = "http://localhost:8080/api/{path_interceptor_param}/path/1/{dynamicReplaceable}",
+
+                Method = "PATCH",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+            Assert.IsNotNull(requestFactory.ResponseInterceptors);
+            Assert.IsNotEmpty(requestFactory.ResponseInterceptors);
+        }
+
+        [Test]
+        public void VerifyPatchDynamicReplaceableRequest()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "PatchDynamicReplaceable";
+            var dynamicParameter = new DynamicParameter("dynamicReplaceable", "2");
+            var arguments = new object[] { "1", dynamicParameter };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/1/2",
 
                 Method = "PATCH",
                 Headers = new List<KeyValuePair<string, string>>
@@ -398,6 +436,10 @@ namespace SoftAPIClient.Tests
         [Log("Send PATCH request to 'Nowhere' for unitTesting with the invalid argument index: invalid={5}")]
         [RequestMapping("PATCH", Path = "/path/{pathId}/{dynamicReplaceable}")]
         Func<Response> Patch([ReplaceableParameter("pathId")] int pathId, [DynamicParameter] IDynamicParameter dynamicParameter);
+
+        [Log("Send PATCH request to 'Nowhere' for unitTesting with the invalid argument index: invalid={5}")]
+        [RequestMapping("PATCH", Path = "/path/{pathId}/{dynamicReplaceable}")]
+        Func<Response> PatchDynamicReplaceable([ReplaceableParameter("pathId")] int pathId, [DynamicParameter(AttributeType.Replaceable)] IDynamicParameter dynamicParameter);
 
         [Log("Send POST request to 'Nowhere' for unitTesting with the next parameters: Authorization={0}, Body={1}")]
         [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" }, ResponseInterceptors = new[] { typeof(TestResponseInterceptor) })]
