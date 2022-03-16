@@ -23,7 +23,7 @@ namespace SoftAPIClient.Tests
             var originalResponse = new object();
             const string responseBodyString = "{\"name\":\"Ivan\",\"age\":18}";
             const int elapsedTime = 1000;
-            IResponseDeserializer deserializer = null;
+            IResponseDeserializer deserializer = RequestFactoryTests.GetDeserializer();
             var response = new Response
             {
                 HttpStatusCode = httpStatusCode,
