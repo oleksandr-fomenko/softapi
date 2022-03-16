@@ -96,6 +96,55 @@ namespace SoftAPIClient.Tests
         }
 
         [Test]
+        public void VerifyPostRequestWithAdditionalRequest()
+        {
+            var targetInterface = typeof(ITestInterfaceValidAdditionalRequest);
+            const string methodName = "Post";
+            var body = new ResponseTests.UserJsonDto
+            {
+                Name = "Master",
+                Age = 99
+            };
+            var arguments = new object[] { "Bearer foo", body };
+
+            var additionalInterceptor = new TestRequestAdditionalInterceptor();
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/additional/{path_interceptor_param_additional}",
+                Body = new KeyValuePair<BodyType, object>(BodyType.Json, body),
+                Method = "POST",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("x-api-key", "123"),
+                    new KeyValuePair<string, string>("Authorization", "Bearer foo"),
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value"),
+                    new KeyValuePair<string, string>("interceptor-header-additional", "interceptor-header-value-additional")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123},
+                    { "query_interceptor_param_additional",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"},
+                    { "path_interceptor_param_additional",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"},
+                    { "formData_interceptor_param_additional",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest(additionalInterceptor);
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [Test]
         public void VerifyGetAllRequest()
         {
             var targetInterface = typeof(ITestInterfaceValid);
@@ -306,6 +355,14 @@ namespace SoftAPIClient.Tests
         Func<Response> GetAll([Settings] DynamicRequestSettings requestSettings);
     }
 
+    [Client(typeof(FakeResponseConverter), Path = "/api/{path_interceptor_param}", RequestInterceptor = typeof(TestRequestInterceptor))]
+    public interface ITestInterfaceValidAdditionalRequest
+    {
+        [Log("Send POST request to 'Nowhere' for unitTesting with the next parameters: Authorization={0}, Body={1}")]
+        [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" }, ResponseInterceptors = new[] { typeof(TestResponseInterceptor) })]
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> Post([HeaderParameter("Authorization")] string authorization, [Body] ResponseTests.UserJsonDto body);
+    }
+
     public class TestRequestInterceptor : IInterceptor
     {
         public Request Intercept()
@@ -327,6 +384,34 @@ namespace SoftAPIClient.Tests
                 FormDataParameters = new Dictionary<string, object>
                 {
                     { "formData_interceptor_param",  "x"}
+                }
+            };
+        }
+    }
+
+    public class TestRequestAdditionalInterceptor : IInterceptor
+    {
+        public Request Intercept()
+        {
+            return new Request
+            {
+                Url = "http://localhost:8080",
+                Path = "/additional/{path_interceptor_param_additional}",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header-additional", "interceptor-header-value-additional")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param_additional",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param_additional",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param_additional",  "x"}
                 }
             };
         }
