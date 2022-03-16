@@ -13,6 +13,8 @@ namespace SoftAPIClient.Tests
 {
     public class RequestFactoryTests : AbstractTest
     {
+        private static readonly object PadLock = new object();
+        private static TestDeserializer _testDeserializer = null;
         [Test]
         public void VerifyInitializationExceptionWhenNullUrlProvided()
         {
@@ -114,6 +116,7 @@ namespace SoftAPIClient.Tests
                 Url = "http://localhost:8080/api/{path_interceptor_param}/path/additional/{path_interceptor_param_additional}",
                 Body = new KeyValuePair<BodyType, object>(BodyType.Json, body),
                 Method = "POST",
+                Deserializer = GetDeserializer(),
                 Headers = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("x-api-key", "123"),
@@ -306,6 +309,22 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(expectedRequest, actualRequest);
         }
 
+        public static TestDeserializer GetDeserializer()
+        {
+            if(_testDeserializer == null)
+            {
+                lock (PadLock)
+                {
+                    if (_testDeserializer == null)
+                    {
+                        _testDeserializer = new TestDeserializer();
+                        return _testDeserializer;
+                    }
+                }
+            }
+            return _testDeserializer;
+        }
+
     }
 
     [Client]
@@ -396,6 +415,7 @@ namespace SoftAPIClient.Tests
             return new Request
             {
                 Url = "http://localhost:8080",
+                Deserializer = RequestFactoryTests.GetDeserializer(),
                 Path = "/additional/{path_interceptor_param_additional}",
                 Headers = new List<KeyValuePair<string, string>>
                 {
@@ -414,6 +434,14 @@ namespace SoftAPIClient.Tests
                     { "formData_interceptor_param_additional",  "x"}
                 }
             };
+        }
+    }
+
+    public class TestDeserializer : IResponseDeserializer
+    {
+        public T Convert<T>(string response)
+        {
+            return default;
         }
     }
 
