@@ -49,7 +49,8 @@ namespace SoftAPIClient.Tests
                 ContentType = "application/json",
                 OriginalResponse = null,
                 ResponseBodyString = null,
-                ElapsedTime = 1000
+                ElapsedTime = 1000,
+                Deserializer = RequestFactoryTests.GetDeserializer()
             };
 
             RestClient.Instance.AddResponseConvertor(new FakeResponseConverter());
@@ -150,7 +151,8 @@ namespace SoftAPIClient.Tests
                 ContentType = "application/json",
                 OriginalResponse = null,
                 ResponseBodyString = null,
-                ElapsedTime = 1000
+                ElapsedTime = 1000,
+                Deserializer = RequestFactoryTests.GetDeserializer()
             };
 
             RestClient.Instance.AddResponseConvertor(new FakeResponseConverter());
@@ -280,6 +282,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(expectedResponse.OriginalResponse, actualResponse.OriginalResponse);
             Assert.AreEqual(expectedResponse.ResponseBodyString, actualResponse.ResponseBodyString);
             Assert.AreEqual(expectedResponse.ElapsedTime, actualResponse.ElapsedTime);
+            Assert.AreEqual(expectedResponse.Deserializer, actualResponse.Deserializer);
         }
 
     }
