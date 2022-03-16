@@ -113,12 +113,13 @@ namespace SoftAPIClient.Core
             ArgumentsData = Utils.GetArguments(arguments, methodInfo, interfaceType);
         }
 
-        public Request BuildRequest()
+        public Request BuildRequest(IInterceptor additionalInterceptor = null)
         {
             var clientRequest = ClientInterceptor?.Intercept();
             var specificRequest = RequestInterceptor?.Intercept();
+            var additionalRequest = additionalInterceptor?.Intercept();
 
-            var resultUrl = GetUrl(clientRequest, specificRequest);
+            var resultUrl = GetUrl(clientRequest, specificRequest, additionalRequest);
             var resultHeaders = GetRequestHeaders();
             var resultPathParameters = PathParameters;
             var resultQueryParameters = QueryParameters;
@@ -129,10 +130,11 @@ namespace SoftAPIClient.Core
 
             ApplyRequest(clientRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
             ApplyRequest(specificRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
+            ApplyRequest(additionalRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
 
             ApplyDynamicParameters(resultHeaders, resultQueryParameters, resultFormDataParameters);
 
-            var resultDeserializer = clientRequest?.Deserializer ?? specificRequest?.Deserializer;
+            var resultDeserializer = clientRequest?.Deserializer ?? specificRequest?.Deserializer ?? additionalRequest?.Deserializer;
             return new Request
             {
                 Url = resultUrl,
@@ -206,10 +208,10 @@ namespace SoftAPIClient.Core
             return new KeyValuePair<AttributeType, IDynamicParameter>(attributeTypeFromDynamicParameter, value);
         }
 
-        private string GetUrl(Request clientRequest, Request specificRequest)
+        private string GetUrl(Request clientRequest, Request specificRequest, Request additionalRequest)
         {
             var dynamicParameterUrl = GetDynamicParameterUrl();
-            var resultUrl = DynamicUrl ?? Client.Url ?? dynamicParameterUrl ?? clientRequest?.Url ?? specificRequest?.Url;
+            var resultUrl = DynamicUrl ?? Client.Url ?? dynamicParameterUrl ?? clientRequest?.Url ?? specificRequest?.Url ?? additionalRequest?.Url;
 
             if (resultUrl == null)
             {
@@ -220,6 +222,7 @@ namespace SoftAPIClient.Core
             resultUrl += clientRequest?.Path;
             resultUrl += RequestMapping.Path;
             resultUrl += specificRequest?.Path;
+            resultUrl += additionalRequest?.Path;
             resultUrl = ApplyReplaceableParameters(resultUrl);
 
             return resultUrl;
