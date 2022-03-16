@@ -13,6 +13,8 @@ namespace SoftAPIClient.Tests
 {
     public class RequestFactoryTests : AbstractTest
     {
+        private static readonly object PadLock = new object();
+        private static TestDeserializer _testDeserializer = null;
         [Test]
         public void VerifyInitializationExceptionWhenNullUrlProvided()
         {
@@ -96,6 +98,130 @@ namespace SoftAPIClient.Tests
         }
 
         [Test]
+        public void VerifyPostRequestWithAdditionalRequest()
+        {
+            var targetInterface = typeof(ITestInterfaceValidAdditionalRequest);
+            const string methodName = "Post";
+
+            var arguments = new object[] { null };
+
+            var additionalInterceptor = new TestRequestAdditionalInterceptor();
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/additional/{path_interceptor_param_additional}",
+                Method = "POST",
+                Deserializer = GetDeserializer(),
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("x-api-key", "123"),
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value"),
+                    new KeyValuePair<string, string>("interceptor-header-additional", "interceptor-header-value-additional")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123},
+                    { "query_interceptor_param_additional",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"},
+                    { "path_interceptor_param_additional",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"},
+                    { "formData_interceptor_param_additional",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest(additionalInterceptor);
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [Test]
+        public void VerifyPostRequestWithAdditionalRequestWithUrlDynamicParameter()
+        {
+            var targetInterface = typeof(ITestInterfaceValidAdditionalRequest);
+            const string methodName = "Post";
+
+            var dynamicParameter = new DynamicParameter(AttributeType.Url, null, "http://localhost:8080");
+            var arguments = new object[] { dynamicParameter };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path",
+                Method = "POST",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("x-api-key", "123"),
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [Test]
+        public void VerifyPostRequestWithSpecificUrlRequest()
+        {
+            var targetInterface = typeof(ITestInterfaceValidAdditionalRequest);
+            const string methodName = "PostSpecificUrl";
+
+            var arguments = new object[] { null };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/additional/{path_interceptor_param_additional}",
+                Method = "POST",
+                Deserializer = GetDeserializer(),
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("x-api-key", "123"),
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value"),
+                    new KeyValuePair<string, string>("interceptor-header-additional", "interceptor-header-value-additional")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123},
+                    { "query_interceptor_param_additional",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"},
+                    { "path_interceptor_param_additional",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"},
+                    { "formData_interceptor_param_additional",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [Test]
         public void VerifyGetAllRequest()
         {
             var targetInterface = typeof(ITestInterfaceValid);
@@ -105,6 +231,7 @@ namespace SoftAPIClient.Tests
 
             var expectedRequest = new Request
             {
+                Deserializer = GetDeserializer(),
                 Url = "http://localhost:8080/api/{path_interceptor_param}/path/all",
                 Method = "GET",
                 Headers = new List<KeyValuePair<string, string>>
@@ -257,6 +384,99 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(expectedRequest, actualRequest);
         }
 
+        [Test]
+        public void VerifyPatchRequestWhenDynamicParameterValueIsNull()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "Patch";
+            var arguments = new object[] { "1", null };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/1/{dynamicReplaceable}",
+
+                Method = "PATCH",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+            Assert.IsNotNull(requestFactory.ResponseInterceptors);
+            Assert.IsNotEmpty(requestFactory.ResponseInterceptors);
+        }
+
+        [Test]
+        public void VerifyPatchDynamicReplaceableRequest()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "PatchDynamicReplaceable";
+            var dynamicParameter = new DynamicParameter("dynamicReplaceable", "2");
+            var arguments = new object[] { "1", dynamicParameter };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path/1/2",
+
+                Method = "PATCH",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+            Assert.IsNotNull(requestFactory.ResponseInterceptors);
+            Assert.IsNotEmpty(requestFactory.ResponseInterceptors);
+        }
+
+        public static TestDeserializer GetDeserializer()
+        {
+            if(_testDeserializer == null)
+            {
+                lock (PadLock)
+                {
+                    if (_testDeserializer == null)
+                    {
+                        _testDeserializer = new TestDeserializer();
+                        return _testDeserializer;
+                    }
+                }
+            }
+            return _testDeserializer;
+        }
+
     }
 
     [Client]
@@ -278,7 +498,7 @@ namespace SoftAPIClient.Tests
     [Client(typeof(FakeResponseConverter), Url = "http://localhost:8080", Path = "/api/{path_interceptor_param}", RequestInterceptor = typeof(TestRequestInterceptor), ResponseInterceptors = new []{typeof(TestResponseInterceptor) }) ]
     public interface ITestInterfaceValid
     {
-        [RequestMapping("GET", Path = "/path/all")]
+        [RequestMapping("GET", Path = "/path/all", RequestInterceptor = typeof(TestRequestSpecificInterceptor))]
         Func<Response> GetAll();
 
         [RequestMapping("GET", Path = "/path/all")]
@@ -290,6 +510,10 @@ namespace SoftAPIClient.Tests
         [Log("Send PATCH request to 'Nowhere' for unitTesting with the invalid argument index: invalid={5}")]
         [RequestMapping("PATCH", Path = "/path/{pathId}/{dynamicReplaceable}")]
         Func<Response> Patch([ReplaceableParameter("pathId")] int pathId, [DynamicParameter] IDynamicParameter dynamicParameter);
+
+        [Log("Send PATCH request to 'Nowhere' for unitTesting with the invalid argument index: invalid={5}")]
+        [RequestMapping("PATCH", Path = "/path/{pathId}/{dynamicReplaceable}")]
+        Func<Response> PatchDynamicReplaceable([ReplaceableParameter("pathId")] int pathId, [DynamicParameter(AttributeType.Replaceable)] IDynamicParameter dynamicParameter);
 
         [Log("Send POST request to 'Nowhere' for unitTesting with the next parameters: Authorization={0}, Body={1}")]
         [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" }, ResponseInterceptors = new[] { typeof(TestResponseInterceptor) })]
@@ -304,6 +528,16 @@ namespace SoftAPIClient.Tests
     {
         [RequestMapping("GET", Path = "/path/all")]
         Func<Response> GetAll([Settings] DynamicRequestSettings requestSettings);
+    }
+
+    [Client(typeof(FakeResponseConverter), Path = "/api/{path_interceptor_param}", RequestInterceptor = typeof(TestRequestInterceptor))]
+    public interface ITestInterfaceValidAdditionalRequest
+    {
+        [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" })]
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> Post([DynamicParameter] IDynamicParameter dynamic);
+
+        [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" }, RequestInterceptor = typeof(TestRequestAdditionalInterceptor))]
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> PostSpecificUrl([DynamicParameter] IDynamicParameter dynamic);
     }
 
     public class TestRequestInterceptor : IInterceptor
@@ -329,6 +563,54 @@ namespace SoftAPIClient.Tests
                     { "formData_interceptor_param",  "x"}
                 }
             };
+        }
+    }
+
+    public class TestRequestSpecificInterceptor : IInterceptor
+    {
+        public Request Intercept()
+        {
+            return new Request
+            {
+                Deserializer = RequestFactoryTests.GetDeserializer(),
+            };
+        }
+    }
+
+    public class TestRequestAdditionalInterceptor : IInterceptor
+    {
+        public Request Intercept()
+        {
+            return new Request
+            {
+                Url = "http://localhost:8080",
+                Deserializer = RequestFactoryTests.GetDeserializer(),
+                Path = "/additional/{path_interceptor_param_additional}",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header-additional", "interceptor-header-value-additional")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param_additional",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param_additional",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param_additional",  "x"}
+                }
+            };
+        }
+    }
+
+    public class TestDeserializer : IResponseDeserializer
+    {
+        public T Convert<T>(string response)
+        {
+            return default;
         }
     }
 
