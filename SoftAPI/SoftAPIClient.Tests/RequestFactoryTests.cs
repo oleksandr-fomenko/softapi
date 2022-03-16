@@ -311,11 +311,11 @@ namespace SoftAPIClient.Tests
         }
 
         [Test]
-        public void VerifyPatchRequestWhenDynamicParameterIsHeader()
+        public void VerifyPatchRequestWhenDynamicParameterValueIsNull()
         {
             var targetInterface = typeof(ITestInterfaceValid);
             const string methodName = "Patch";
-            var dynamicParameter = new DynamicParameter(AttributeType.Header, "dynamic-replaceable-header", "dynamic-replaceable-header-value");
+            var dynamicParameter = new DynamicParameter(AttributeType.Header, "dynamic-replaceable-header", null);
             var arguments = new object[] { "1", dynamicParameter };
 
             var expectedRequest = new Request
@@ -325,8 +325,7 @@ namespace SoftAPIClient.Tests
                 Method = "PATCH",
                 Headers = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value"),
-                    new KeyValuePair<string, string>("dynamic-replaceable-header", "dynamic-replaceable-header-value")
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
                 },
                 QueryParameters = new Dictionary<string, object>
                 {
