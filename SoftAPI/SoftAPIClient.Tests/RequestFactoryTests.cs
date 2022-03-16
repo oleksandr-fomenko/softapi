@@ -102,25 +102,19 @@ namespace SoftAPIClient.Tests
         {
             var targetInterface = typeof(ITestInterfaceValidAdditionalRequest);
             const string methodName = "Post";
-            var body = new ResponseTests.UserJsonDto
-            {
-                Name = "Master",
-                Age = 99
-            };
-            var arguments = new object[] { "Bearer foo", body };
+
+            var arguments = new object[] { null };
 
             var additionalInterceptor = new TestRequestAdditionalInterceptor();
 
             var expectedRequest = new Request
             {
                 Url = "http://localhost:8080/api/{path_interceptor_param}/path/additional/{path_interceptor_param_additional}",
-                Body = new KeyValuePair<BodyType, object>(BodyType.Json, body),
                 Method = "POST",
                 Deserializer = GetDeserializer(),
                 Headers = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("x-api-key", "123"),
-                    new KeyValuePair<string, string>("Authorization", "Bearer foo"),
                     new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value"),
                     new KeyValuePair<string, string>("interceptor-header-additional", "interceptor-header-value-additional")
                 },
@@ -143,6 +137,44 @@ namespace SoftAPIClient.Tests
 
             var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
             var actualRequest = requestFactory.BuildRequest(additionalInterceptor);
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [Test]
+        public void VerifyPostRequestWithAdditionalRequestWithUrlDynamicParameter()
+        {
+            var targetInterface = typeof(ITestInterfaceValidAdditionalRequest);
+            const string methodName = "Post";
+
+            var dynamicParameter = new DynamicParameter(AttributeType.Url, null, "http://localhost:8080");
+            var arguments = new object[] { dynamicParameter };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path",
+                Method = "POST",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("x-api-key", "123"),
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var actualRequest = requestFactory.BuildRequest();
 
             Assert.AreEqual(expectedRequest, actualRequest);
         }
@@ -460,8 +492,8 @@ namespace SoftAPIClient.Tests
     public interface ITestInterfaceValidAdditionalRequest
     {
         [Log("Send POST request to 'Nowhere' for unitTesting with the next parameters: Authorization={0}, Body={1}")]
-        [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" }, ResponseInterceptors = new[] { typeof(TestResponseInterceptor) })]
-        Func<ResponseGeneric<ResponseTests.UserJsonDto>> Post([HeaderParameter("Authorization")] string authorization, [Body] ResponseTests.UserJsonDto body);
+        [RequestMapping("POST", Path = "/path", Headers = new[] { "x-api-key=123" })]
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> Post([DynamicParameter] IDynamicParameter dynamic);
     }
 
     public class TestRequestInterceptor : IInterceptor
