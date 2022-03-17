@@ -131,6 +131,32 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual("application/json", actualResponse.TestString);
         }
 
+        [TestCase(1), Order(4)]
+        [TestCase(null)]
+        public void VerifyGetAllRequestWhenIntParameterIsProvided(int? param)
+        {
+            var expectedResponse = new Response
+            {
+                HttpStatusCode = HttpStatusCode.OK,
+                ResponseUri = new Uri("http://localhost:8080/api/{path_interceptor_param}/path/all"),
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                Cookies = new List<KeyValuePair<string, string>>(),
+                ContentType = "application/json",
+                OriginalResponse = null,
+                ResponseBodyString = null,
+                ElapsedTime = 1000,
+                Deserializer = null
+            };
+
+            RestClient.Instance.AddResponseConvertor(new FakeResponseConverter());
+            var actualResponse = RestClient.Instance.GetService<ITestInterfaceValid>().GetAll(param).Invoke();
+
+            VerifyResponses(expectedResponse, actualResponse);
+        }
+
         [Test, Order(5)]
         public void VerifyGetAllRequestWhenNoLoggingForRestClient()
         {

@@ -502,6 +502,18 @@ namespace SoftAPIClient.Tests
         Func<Response> GetAll();
 
         [RequestMapping("GET", Path = "/path/all")]
+        Func<Response> GetAll([QueryParameter("name")] long? name);
+
+        [RequestMapping("GET", Path = "/path/all")]
+        Func<Response> GetAll([QueryParameter("name")] int? name);
+
+        [RequestMapping("POST", Path = "/path")]
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> PostBody([Body] ResponseTests.UserJsonDto body);
+
+        [RequestMapping("POST", Path = "/path")]
+        Func<ResponseGeneric<ResponseTests.UserJsonDtoInherited>> PostBody([Body] ResponseTests.UserJsonDtoInherited body);
+
+        [RequestMapping("GET", Path = "/path/all")]
         Func<ResponseGeneric<ResponseTests.UserJsonDto>> GetAllGeneric();
 
         [RequestMapping("GET", Headers = new[] { "x-api-key+123" })]
