@@ -6,6 +6,7 @@ using NUnit.Framework;
 using RestSharp;
 using SoftAPIClient.MetaData;
 using SoftAPIClient.Core;
+using Moq;
 
 namespace SoftAPIClient.RestSharpNewtonsoft.Tests
 {
@@ -62,6 +63,23 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             Assert.AreEqual(expectedResponse.Cookies, actualResponse.Cookies);
             Assert.IsNotNull(actualResponse.Deserializer);
             Assert.IsInstanceOf<RestSharpJsonResponseDeserializer>(actualResponse.Deserializer);
+        }
+
+        [Test]
+        public void VerifyGetRestResponse()
+        {
+            const HttpStatusCode httpStatusCode = HttpStatusCode.OK;
+            var response = new Mock<IRestResponse>();
+            response.Setup(_ => _.StatusCode).Returns(httpStatusCode);
+            
+            var mockIRestClient = new Mock<IRestClient>();
+            mockIRestClient
+                .Setup(x => x.Execute(It.IsAny<IRestRequest>()))
+                .Returns(response.Object);
+
+            var restResponse = base.GetRestResponse(mockIRestClient.Object, new RestRequest());
+
+            Assert.AreEqual(httpStatusCode, restResponse.StatusCode);
         }
 
         protected override IRestResponse GetRestResponse(IRestClient client, RestRequest restRequest)
