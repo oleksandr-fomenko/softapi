@@ -3,7 +3,7 @@ using SoftAPIClient.Core.Interfaces;
 
 namespace SoftAPIClient.Example.Interceptors.GitHub.Request
 {
-    public class BaseGitHubRequestInterceptor : IInterceptor
+    public class BaseGitHubRequestInterceptor : IRequestInterceptor
     {
         public virtual MetaData.Request Intercept()
         {

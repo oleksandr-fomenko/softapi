@@ -4,7 +4,7 @@ using SoftAPIClient.Example.Factories.GitHub;
 
 namespace SoftAPIClient.Example.Interceptors.GitHub.Request
 {
-    public class GitHubRepositoryRequestInterceptor : IInterceptor
+    public class GitHubRepositoryRequestInterceptor : IRequestInterceptor
     {
         public MetaData.Request Intercept()
         {

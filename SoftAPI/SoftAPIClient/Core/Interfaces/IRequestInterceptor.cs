@@ -2,7 +2,7 @@
 
 namespace SoftAPIClient.Core.Interfaces
 {
-    public interface IInterceptor
+    public interface IRequestInterceptor
     {
         Request Intercept();
     }

@@ -72,8 +72,8 @@ namespace SoftAPIClient.Core
             }
         }
 
-        private IInterceptor ClientInterceptor => Utils.CreateInstanceIfNotNull<IInterceptor>(Client.RequestInterceptor);
-        private IInterceptor RequestInterceptor => Utils.CreateInstanceIfNotNull<IInterceptor>(RequestMapping.RequestInterceptor);
+        private IRequestInterceptor ClientInterceptor => Utils.CreateInstanceIfNotNull<IRequestInterceptor>(Client.RequestInterceptor);
+        private IRequestInterceptor RequestInterceptor => Utils.CreateInstanceIfNotNull<IRequestInterceptor>(RequestMapping.RequestInterceptor);
 
         public IEnumerable<IResponseInterceptor> ResponseInterceptors
         {
@@ -113,7 +113,7 @@ namespace SoftAPIClient.Core
             ArgumentsData = Utils.GetArguments(arguments, methodInfo, interfaceType);
         }
 
-        public Request BuildRequest(IInterceptor additionalInterceptor = null)
+        public Request BuildRequest(IRequestInterceptor additionalInterceptor = null)
         {
             var clientRequest = ClientInterceptor?.Intercept();
             var specificRequest = RequestInterceptor?.Intercept();
