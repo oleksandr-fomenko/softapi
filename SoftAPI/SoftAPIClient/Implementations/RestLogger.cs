@@ -52,7 +52,7 @@ namespace SoftAPIClient.Implementations
             {
                 message.AppendLine($"Body: Type - '{request.Body.Key};, Value:");
                 message.AppendLine();
-                message.AppendLine($"{Utils.HandleToStringIfList(bodyValue)}");
+                message.AppendLine(Utils.HandleToStringIfList(bodyValue));
             }
             message.AppendLine();
             message.AppendLine("--- Request Data end ---");
@@ -66,13 +66,13 @@ namespace SoftAPIClient.Implementations
             message.AppendLine($"Url - '{response.ResponseUri}'");
             message.AppendLine($"Http Status Code - '{response.HttpStatusCode}'");
             message.AppendLine($"Content Type - '{response.ContentType}'");
-            message.Append($"{GetFormattedPairList(response.Headers, "Headers:")}");
-            message.Append($"{GetFormattedPairList(response.Cookies, "Cookies:")}");
+            message.Append(GetFormattedPairList(response.Headers, "Headers:"));
+            message.Append(GetFormattedPairList(response.Cookies, "Cookies:"));
             if (response.ResponseBodyString != null)
             {
                 message.AppendLine();
                 message.AppendLine("Response Body string:");
-                message.AppendLine($"{response.ResponseBodyString}");
+                message.AppendLine(response.ResponseBodyString);
                 message.AppendLine();
             }
             message.AppendLine($"Elapsed time, ms - '{response.ElapsedTime}'");
