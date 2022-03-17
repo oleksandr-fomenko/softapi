@@ -34,10 +34,10 @@ namespace SoftAPIClient.Implementations
             message.AppendLine("--- Request Data start ---");
             message.AppendLine($"Url - '{request.Url}'");
             message.AppendLine($"Method - '{request.Method}'");
-            message.Append($"{GetParamsFormatted(request.QueryParameters, "Query Parameters:")}");
-            message.Append($"{GetParamsFormatted(request.PathParameters, "Path Parameters:")}");
-            message.Append($"{GetParamsFormatted(request.FormDataParameters, "FormData Parameters:")}");
-            message.Append($"{GetFormattedPairList(request.Headers, "Headers:")}");
+            message.Append(GetParamsFormatted(request.QueryParameters, "Query Parameters:"));
+            message.Append(GetParamsFormatted(request.PathParameters, "Path Parameters:"));
+            message.Append(GetParamsFormatted(request.FormDataParameters, "FormData Parameters:"));
+            message.Append(GetFormattedPairList(request.Headers, "Headers:"));
             if (request.Settings != null)
             {
                 message.AppendLine();
@@ -52,7 +52,7 @@ namespace SoftAPIClient.Implementations
             {
                 message.AppendLine($"Body: Type - '{request.Body.Key};, Value:");
                 message.AppendLine();
-                message.AppendLine($"{Utils.HandleToStringIfList(bodyValue)}");
+                message.AppendLine(Utils.HandleToStringIfList(bodyValue));
             }
             message.AppendLine();
             message.AppendLine("--- Request Data end ---");
@@ -66,13 +66,13 @@ namespace SoftAPIClient.Implementations
             message.AppendLine($"Url - '{response.ResponseUri}'");
             message.AppendLine($"Http Status Code - '{response.HttpStatusCode}'");
             message.AppendLine($"Content Type - '{response.ContentType}'");
-            message.Append($"{GetFormattedPairList(response.Headers, "Headers:")}");
-            message.Append($"{GetFormattedPairList(response.Cookies, "Cookies:")}");
+            message.Append(GetFormattedPairList(response.Headers, "Headers:"));
+            message.Append(GetFormattedPairList(response.Cookies, "Cookies:"));
             if (response.ResponseBodyString != null)
             {
                 message.AppendLine();
                 message.AppendLine("Response Body string:");
-                message.AppendLine($"{response.ResponseBodyString}");
+                message.AppendLine(response.ResponseBodyString);
                 message.AppendLine();
             }
             message.AppendLine($"Elapsed time, ms - '{response.ElapsedTime}'");
