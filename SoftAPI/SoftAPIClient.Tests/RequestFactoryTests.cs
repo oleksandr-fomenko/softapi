@@ -552,7 +552,7 @@ namespace SoftAPIClient.Tests
         Func<ResponseGeneric<ResponseTests.UserJsonDto>> PostSpecificUrl([DynamicParameter] IDynamicParameter dynamic);
     }
 
-    public class TestRequestInterceptor : IInterceptor
+    public class TestRequestInterceptor : IRequestInterceptor
     {
         public Request Intercept()
         {
@@ -578,7 +578,7 @@ namespace SoftAPIClient.Tests
         }
     }
 
-    public class TestRequestSpecificInterceptor : IInterceptor
+    public class TestRequestSpecificInterceptor : IRequestInterceptor
     {
         public Request Intercept()
         {
@@ -589,7 +589,7 @@ namespace SoftAPIClient.Tests
         }
     }
 
-    public class TestRequestAdditionalInterceptor : IInterceptor
+    public class TestRequestAdditionalInterceptor : IRequestInterceptor
     {
         public Request Intercept()
         {
