@@ -223,7 +223,32 @@ namespace SoftAPIClient.Tests
             VerifyResponses(expectedResponse, actualResponse);
         }
 
-        
+        [Test, Order(4)]
+        public void VerifyPostBodyRequestWhenNullBodyIsProvided()
+        {
+            var response = new Response
+            {
+                HttpStatusCode = HttpStatusCode.OK,
+                ResponseUri = new Uri("http://localhost:8080/api/{path_interceptor_param}/path"),
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                Cookies = new List<KeyValuePair<string, string>>(),
+                ContentType = "application/json",
+                OriginalResponse = null,
+                ResponseBodyString = null,
+                ElapsedTime = 1000,
+                Deserializer = null
+            };
+
+            var expectedResponse = new ResponseGeneric<ResponseTests.UserJsonDto>(response);
+
+            RestClient.Instance.AddResponseConvertor(new FakeResponseConverter());
+            var actualResponse = RestClient.Instance.GetService<ITestInterfaceValid>().PostBody(null).Invoke();
+
+            VerifyResponses(expectedResponse, actualResponse);
+        }
 
         [Test, Order(5)]
         public void VerifyGetAllRequestWhenNoLoggingForRestClient()
