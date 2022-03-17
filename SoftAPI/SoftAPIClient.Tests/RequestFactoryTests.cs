@@ -252,7 +252,7 @@ namespace SoftAPIClient.Tests
                 }
             };
 
-            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName, new Type[0]), arguments);
             var actualRequest = requestFactory.BuildRequest();
 
             Assert.AreEqual(expectedRequest, actualRequest);
@@ -500,6 +500,18 @@ namespace SoftAPIClient.Tests
     {
         [RequestMapping("GET", Path = "/path/all", RequestInterceptor = typeof(TestRequestSpecificInterceptor))]
         Func<Response> GetAll();
+
+        [RequestMapping("GET", Path = "/path/all")]
+        Func<Response> GetAll([QueryParameter("name")] long? name);
+
+        [RequestMapping("GET", Path = "/path/all")]
+        Func<Response> GetAll([QueryParameter("name")] int? name);
+
+        [RequestMapping("POST", Path = "/path")]
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> PostBody([Body] ResponseTests.UserJsonDto body);
+
+        [RequestMapping("POST", Path = "/path")]
+        Func<ResponseGeneric<ResponseTests.UserJsonDtoInherited>> PostBody([Body] ResponseTests.UserJsonDtoInherited body);
 
         [RequestMapping("GET", Path = "/path/all")]
         Func<ResponseGeneric<ResponseTests.UserJsonDto>> GetAllGeneric();

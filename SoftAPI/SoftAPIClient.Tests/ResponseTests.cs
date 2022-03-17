@@ -137,5 +137,9 @@ namespace SoftAPIClient.Tests
                 return "{\"name\":\"" + Name + "\",\"age\":" + Age + "}";
             }
         }
+
+        public class UserJsonDtoInherited : UserJsonDto
+        {
+        }
     }
 }
