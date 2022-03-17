@@ -34,10 +34,10 @@ namespace SoftAPIClient.Implementations
             message.AppendLine("--- Request Data start ---");
             message.AppendLine($"Url - '{request.Url}'");
             message.AppendLine($"Method - '{request.Method}'");
-            message.Append($"{GetParamsFormatted(request.QueryParameters, "Query Parameters:")}");
-            message.Append($"{GetParamsFormatted(request.PathParameters, "Path Parameters:")}");
-            message.Append($"{GetParamsFormatted(request.FormDataParameters, "FormData Parameters:")}");
-            message.Append($"{GetFormattedPairList(request.Headers, "Headers:")}");
+            message.Append(GetParamsFormatted(request.QueryParameters, "Query Parameters:"));
+            message.Append(GetParamsFormatted(request.PathParameters, "Path Parameters:"));
+            message.Append(GetParamsFormatted(request.FormDataParameters, "FormData Parameters:"));
+            message.Append(GetFormattedPairList(request.Headers, "Headers:"));
             if (request.Settings != null)
             {
                 message.AppendLine();
