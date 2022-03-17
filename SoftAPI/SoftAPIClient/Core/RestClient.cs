@@ -10,7 +10,7 @@ using SoftAPIClient.MetaData;
 using MassiveDynamicProxyGenerator;
 using MassiveDynamicProxyGenerator.SimpleInjector;
 using SimpleInjector;
-using IInterceptor = SoftAPIClient.Core.Interfaces.IInterceptor;
+using IRequestInterceptor = SoftAPIClient.Core.Interfaces.IRequestInterceptor;
 
 namespace SoftAPIClient.Core
 {
@@ -57,7 +57,7 @@ namespace SoftAPIClient.Core
             return this;
         }
 
-        public TService GetService<TService>(IInterceptor additionalInterceptor = null) where TService : class
+        public TService GetService<TService>(IRequestInterceptor additionalInterceptor = null) where TService : class
         {
             var type = GetTypeOfService<TService>();
             var adapter = new InterceptorAdapter(invocation =>
