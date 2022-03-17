@@ -252,7 +252,7 @@ namespace SoftAPIClient.Tests
                 }
             };
 
-            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName), arguments);
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName, new Type[0]), arguments);
             var actualRequest = requestFactory.BuildRequest();
 
             Assert.AreEqual(expectedRequest, actualRequest);
