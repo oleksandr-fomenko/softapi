@@ -98,6 +98,48 @@ namespace SoftAPIClient.Tests
         }
 
         [Test]
+        public void VerifyPostRequestBodyWithName()
+        {
+            var targetInterface = typeof(ITestInterfaceValid);
+            const string methodName = "PostBody";
+            var body = new ResponseTests.UserJsonDto
+            {
+                Name = "Master",
+                Age = 99
+            };
+            var arguments = new object[] { body };
+
+            var expectedRequest = new Request
+            {
+                Url = "http://localhost:8080/api/{path_interceptor_param}/path",
+                Body = new KeyValuePair<BodyType, object>(BodyType.Json, body),
+                BodyName = "test_name",
+                Method = "POST",
+                Headers = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("interceptor-header", "interceptor-header-value")
+                },
+                QueryParameters = new Dictionary<string, object>
+                {
+                    { "query_interceptor_param",  123}
+                },
+                PathParameters = new Dictionary<string, object>
+                {
+                    { "path_interceptor_param",  "v1"}
+                },
+                FormDataParameters = new Dictionary<string, object>
+                {
+                    { "formData_interceptor_param",  "x"}
+                }
+            };
+
+            var requestFactory = new RequestFactory(targetInterface, targetInterface.GetMethod(methodName, new []{ typeof(ResponseTests.UserJsonDto) }), arguments);
+            var actualRequest = requestFactory.BuildRequest();
+
+            Assert.AreEqual(expectedRequest, actualRequest);
+        }
+
+        [Test]
         public void VerifyPostRequestWithAdditionalRequest()
         {
             var targetInterface = typeof(ITestInterfaceValidAdditionalRequest);
@@ -132,6 +174,10 @@ namespace SoftAPIClient.Tests
                 {
                     { "formData_interceptor_param",  "x"},
                     { "formData_interceptor_param_additional",  "x"}
+                },
+                FileParameters = new List<FileParameter>
+                {
+                    new FileParameter("testFile", new byte[] { 1, 2, 3 }, "test.jpeg", "image/jpeg")
                 }
             };
 
@@ -212,6 +258,10 @@ namespace SoftAPIClient.Tests
                 {
                     { "formData_interceptor_param",  "x"},
                     { "formData_interceptor_param_additional",  "x"}
+                },
+                FileParameters = new List<FileParameter>
+                {
+                    new FileParameter("testFile", new byte[] { 1, 2, 3 }, "test.jpeg", "image/jpeg")
                 }
             };
 
@@ -508,7 +558,7 @@ namespace SoftAPIClient.Tests
         Func<Response> GetAll([QueryParameter("name")] int? name);
 
         [RequestMapping("POST", Path = "/path")]
-        Func<ResponseGeneric<ResponseTests.UserJsonDto>> PostBody([Body] ResponseTests.UserJsonDto body);
+        Func<ResponseGeneric<ResponseTests.UserJsonDto>> PostBody([Body(BodyType.Json, "test_name")] ResponseTests.UserJsonDto body);
 
         [RequestMapping("POST", Path = "/path")]
         Func<ResponseGeneric<ResponseTests.UserJsonDtoInherited>> PostBody([Body] ResponseTests.UserJsonDtoInherited body);
@@ -613,6 +663,10 @@ namespace SoftAPIClient.Tests
                 FormDataParameters = new Dictionary<string, object>
                 {
                     { "formData_interceptor_param_additional",  "x"}
+                },
+                FileParameters = new List<FileParameter>
+                {
+                    new FileParameter("testFile", new byte[] { 1, 2, 3 }, "test.jpeg", "image/jpeg")
                 }
             };
         }

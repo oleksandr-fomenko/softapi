@@ -1,15 +1,16 @@
-﻿using SoftAPIClient.Attributes.Base;
-using SoftAPIClient.MetaData;
+﻿using SoftAPIClient.MetaData;
 
 namespace SoftAPIClient.Attributes
 {
     [System.AttributeUsage(System.AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class BodyAttribute : BaseParameterAttribute
+    public class BodyAttribute : System.Attribute
     {
+        public string Name { get; } 
         public BodyType BodyType { get; } 
-        public BodyAttribute(BodyType bodyType)
+        public BodyAttribute(BodyType bodyType, string name = null)
         {
             BodyType = bodyType;
+            Name = name;
         }
 
         public BodyAttribute() : this(BodyType.Json)

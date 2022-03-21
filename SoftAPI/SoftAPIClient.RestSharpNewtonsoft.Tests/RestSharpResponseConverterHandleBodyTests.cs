@@ -48,6 +48,32 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
         }
 
         [Test]
+        public void VerifyJsonBodyHandling_WithBodyName()
+        {
+            var userObject = new ResponseTests.UserJsonDto
+            {
+                Age = 22,
+                Name = "JsonLad"
+            };
+            var expectedParameters = new List<Parameter>
+            {
+                new Parameter("test_name", JsonConvert.SerializeObject(userObject),"application/json", ParameterType.RequestBody)
+            };
+
+            var request = new Request
+            {
+                BodyName = "test_name",
+                Body = new KeyValuePair<BodyType, object>(BodyType.Json, userObject)
+            };
+            var restRequest = new RestRequest(Method.GET);
+
+            HandleBody(request, restRequest);
+
+            var actualParameters = restRequest.Parameters;
+            Assert.AreEqual(expectedParameters, actualParameters);
+        }
+
+        [Test]
         public void VerifyXmlBodyHandling()
         {
             var userObject = new UserXmlDto
@@ -77,6 +103,32 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
         }
 
         [Test]
+        public void VerifyXmlBodyHandling_WithBodyName()
+        {
+            var userObject = new UserXmlDto
+            {
+                Age = 23,
+                Name = "XmlLad"
+            };
+            var expectedParameters = new List<Parameter>
+            {
+                new Parameter("test_name", new RestSharp.Serializers.DotNetXmlSerializer().Serialize(userObject),"application/xml", ParameterType.RequestBody)
+            };
+
+            var request = new Request
+            {
+                BodyName = "test_name",
+                Body = new KeyValuePair<BodyType, object>(BodyType.Xml, userObject)
+            };
+            var restRequest = new RestRequest(Method.GET);
+
+            HandleBody(request, restRequest);
+
+            var actualParameters = restRequest.Parameters;
+            Assert.AreEqual(expectedParameters, actualParameters);
+        }
+
+        [Test]
         public void VerifyTextBodyHandling()
         {
             const string textBody = "TxtLad";
@@ -88,6 +140,29 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
 
             var request = new Request
             {
+                Body = new KeyValuePair<BodyType, object>(BodyType.Text, textBody)
+            };
+            var restRequest = new RestRequest(Method.GET);
+
+            HandleBody(request, restRequest);
+
+            var actualParameters = restRequest.Parameters;
+            Assert.AreEqual(expectedParameters, actualParameters);
+        }
+
+        [Test]
+        public void VerifyTextBodyHandling_WithBodyName()
+        {
+            const string textBody = "TxtLad";
+
+            var expectedParameters = new List<Parameter>
+            {
+                new Parameter("test_name", textBody, "text/plain" , ParameterType.RequestBody)
+            };
+
+            var request = new Request
+            {
+                BodyName = "test_name",
                 Body = new KeyValuePair<BodyType, object>(BodyType.Text, textBody)
             };
             var restRequest = new RestRequest(Method.GET);
