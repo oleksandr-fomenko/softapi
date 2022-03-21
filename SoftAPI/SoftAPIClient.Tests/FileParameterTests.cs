@@ -16,6 +16,7 @@ namespace SoftAPIClient.Tests
             var fileParameter2 = new FileParameter(name, bytes, fileName, contentType);
 
             Assert.IsTrue(fileParameter.Equals(fileParameter2));
+            Assert.IsTrue(fileParameter.GetHashCode() != 0);
             Assert.AreEqual(name, fileParameter.Name);
             Assert.AreEqual(fileName, fileParameter.FileName);
             Assert.AreEqual(contentType, fileParameter.ContentType);
