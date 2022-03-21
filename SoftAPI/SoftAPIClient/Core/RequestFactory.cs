@@ -37,14 +37,19 @@ namespace SoftAPIClient.Core
                 return new KeyValuePair<string, string>(key, value);
             }).ToList();
 
-        private KeyValuePair<BodyType, object> GetBody()
+        private KeyValuePair<BodyType, object> GetBody(out string bodyName)
         {
             IList<KeyValuePair<ParameterInfo, object>> pairs = ArgumentsData.Where(p => p.Key.GetCustomAttribute<BodyAttribute>() != null).ToList();
             if (pairs.Count == 0)
             {
+                bodyName = null;
                 return new KeyValuePair<BodyType, object>();
             }
-            return pairs.Select(pair => new KeyValuePair<BodyType, object>(pair.Key.GetCustomAttribute<BodyAttribute>().BodyType, pair.Value)).FirstOrDefault();
+
+            var (attributeData, value) = pairs.FirstOrDefault();
+            var bodyAttribute = attributeData.GetCustomAttribute<BodyAttribute>();
+            bodyName = bodyAttribute.Name;
+            return new KeyValuePair<BodyType, object>(bodyAttribute.BodyType, value);
         }
 
         private List<KeyValuePair<AttributeType, IDynamicParameter>> DynamicParameters()
@@ -142,6 +147,7 @@ namespace SoftAPIClient.Core
             ApplyDynamicParameters(resultHeaders, resultQueryParameters, resultFormDataParameters);
 
             var resultDeserializer = clientRequest?.Deserializer ?? specificRequest?.Deserializer ?? additionalRequest?.Deserializer;
+
             return new Request
             {
                 Url = resultUrl,
@@ -150,7 +156,8 @@ namespace SoftAPIClient.Core
                 QueryParameters = Utils.RemoveNullableValues(resultQueryParameters),
                 FormDataParameters = Utils.RemoveNullableValues(resultFormDataParameters),
                 Headers = Utils.RemoveNullableValues(resultHeaders.Distinct()),
-                Body = GetBody(),
+                Body = GetBody(out var bodyName),
+                BodyName = bodyName,
                 Deserializer = resultDeserializer,
                 Settings = Settings,
                 FileParameters = resultFileParameters
