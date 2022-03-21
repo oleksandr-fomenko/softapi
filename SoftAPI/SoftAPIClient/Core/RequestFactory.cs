@@ -72,13 +72,10 @@ namespace SoftAPIClient.Core
             }
         }
 
-        private List<FileParameter> FileParameters
+        private List<FileParameter> GetFileParameters()
         {
-            get
-            {
-                return ArgumentsData.Where(p => p.Key.GetCustomAttribute<FileAttribute>() != null)
-                    .Select(pair => pair.Value as FileParameter).ToList();
-            }
+            return ArgumentsData.Where(p => p.Key.GetCustomAttribute<FileAttribute>() != null)
+                .Select(pair => pair.Value as FileParameter).ToList();
         }
 
         private IRequestInterceptor ClientInterceptor => Utils.CreateInstanceIfNotNull<IRequestInterceptor>(Client.RequestInterceptor);
@@ -130,7 +127,7 @@ namespace SoftAPIClient.Core
 
             var resultUrl = GetUrl(clientRequest, specificRequest, additionalRequest);
             var resultHeaders = GetRequestHeaders();
-            var resultFileParameters = FileParameters;
+            var resultFileParameters = GetFileParameters();
             var resultPathParameters = PathParameters;
             var resultQueryParameters = QueryParameters;
             var resultFormDataParameters = FormDataParameters;
