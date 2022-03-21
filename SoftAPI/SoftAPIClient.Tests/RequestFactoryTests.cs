@@ -132,6 +132,10 @@ namespace SoftAPIClient.Tests
                 {
                     { "formData_interceptor_param",  "x"},
                     { "formData_interceptor_param_additional",  "x"}
+                },
+                FileParameters = new List<FileParameter>
+                {
+                    new FileParameter("testFile", new byte[] { 1, 2, 3 }, "test.jpeg", "image/jpeg")
                 }
             };
 
@@ -212,6 +216,10 @@ namespace SoftAPIClient.Tests
                 {
                     { "formData_interceptor_param",  "x"},
                     { "formData_interceptor_param_additional",  "x"}
+                },
+                FileParameters = new List<FileParameter>
+                {
+                    new FileParameter("testFile", new byte[] { 1, 2, 3 }, "test.jpeg", "image/jpeg")
                 }
             };
 
@@ -613,6 +621,10 @@ namespace SoftAPIClient.Tests
                 FormDataParameters = new Dictionary<string, object>
                 {
                     { "formData_interceptor_param_additional",  "x"}
+                },
+                FileParameters = new List<FileParameter>
+                {
+                    new FileParameter("testFile", new byte[] { 1, 2, 3 }, "test.jpeg", "image/jpeg")
                 }
             };
         }

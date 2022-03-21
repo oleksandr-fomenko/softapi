@@ -72,6 +72,15 @@ namespace SoftAPIClient.Core
             }
         }
 
+        private List<FileParameter> FileParameters
+        {
+            get
+            {
+                return ArgumentsData.Where(p => p.Key.GetCustomAttribute<FileAttribute>() != null)
+                    .Select(pair => pair.Value as FileParameter).ToList();
+            }
+        }
+
         private IRequestInterceptor ClientInterceptor => Utils.CreateInstanceIfNotNull<IRequestInterceptor>(Client.RequestInterceptor);
         private IRequestInterceptor RequestInterceptor => Utils.CreateInstanceIfNotNull<IRequestInterceptor>(RequestMapping.RequestInterceptor);
 
@@ -121,6 +130,7 @@ namespace SoftAPIClient.Core
 
             var resultUrl = GetUrl(clientRequest, specificRequest, additionalRequest);
             var resultHeaders = GetRequestHeaders();
+            var resultFileParameters = FileParameters;
             var resultPathParameters = PathParameters;
             var resultQueryParameters = QueryParameters;
             var resultFormDataParameters = FormDataParameters;
@@ -128,9 +138,9 @@ namespace SoftAPIClient.Core
 
             Utils.MergeCollectionToList(resultHeaders, headerParameters);
 
-            ApplyRequest(clientRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
-            ApplyRequest(specificRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
-            ApplyRequest(additionalRequest, resultHeaders, resultPathParameters, resultQueryParameters, resultFormDataParameters);
+            ApplyRequest(clientRequest, resultHeaders, resultFileParameters, resultPathParameters, resultQueryParameters, resultFormDataParameters);
+            ApplyRequest(specificRequest, resultHeaders, resultFileParameters, resultPathParameters, resultQueryParameters, resultFormDataParameters);
+            ApplyRequest(additionalRequest, resultHeaders, resultFileParameters, resultPathParameters, resultQueryParameters, resultFormDataParameters);
 
             ApplyDynamicParameters(resultHeaders, resultQueryParameters, resultFormDataParameters);
 
@@ -145,12 +155,14 @@ namespace SoftAPIClient.Core
                 Headers = Utils.RemoveNullableValues(resultHeaders.Distinct()),
                 Body = GetBody(),
                 Deserializer = resultDeserializer,
-                Settings = Settings
+                Settings = Settings,
+                FileParameters = resultFileParameters
             };
         }
 
         private void ApplyRequest(Request request,
             List<KeyValuePair<string, string>> resultHeaders,
+            List<FileParameter> resultFileParameters,
             Dictionary<string, object> resultPathParameters,
             Dictionary<string, object> resultQueryParameters,
             Dictionary<string, object> resultFormDataParameters)
@@ -160,6 +172,7 @@ namespace SoftAPIClient.Core
                 return;
             }
             Utils.MergeCollectionToList(resultHeaders, request.Headers);
+            resultFileParameters.AddRange(request.FileParameters);
             Utils.MergeDictionaries(resultPathParameters, request.PathParameters);
             Utils.MergeDictionaries(resultQueryParameters, request.QueryParameters);
             Utils.MergeDictionaries(resultFormDataParameters, request.FormDataParameters);
