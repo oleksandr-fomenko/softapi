@@ -33,6 +33,11 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             new KeyValuePair<string, string>("Content-Type", ContentType),
             new KeyValuePair<string, string>("x-api-key", null),
         };
+
+        private static readonly List<Core.FileParameter> FileParameters = new List<Core.FileParameter>
+        {
+            new Core.FileParameter("testFile", new byte[] { 1, 2, 3 }, "test.jpeg", "image/jpeg")
+        };
         private static readonly List<KeyValuePair<string, string>> Cookies = new List<KeyValuePair<string, string>>
         {
             new KeyValuePair<string, string>("Cookie1", "1"),
@@ -126,6 +131,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 QueryParameters = QueryParameters,
                 FormDataParameters = FormDataParameters,
                 Headers = Headers,
+                FileParameters = FileParameters,
                 Body = Body,
                 Deserializer = Deserializer,
                 Settings = DynamicRequestSettings

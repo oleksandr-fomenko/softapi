@@ -36,7 +36,10 @@ namespace SoftAPIClient.RestSharpNewtonsoft
             }
 
             var restRequest = new RestRequest(Enum.Parse<Method>(requestObject.Method));
+
             requestObject.Headers.ForEach(h => restRequest.AddHeader(h.Key, h.Value));
+
+            requestObject.FileParameters.ForEach(f => restRequest.AddFile(f.Name, f.Bytes, f.FileName, f.ContentType));
 
             if (requestObject.FormDataParameters.Count != 0)
             {
