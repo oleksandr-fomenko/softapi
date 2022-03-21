@@ -21,5 +21,16 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual($"Name={name}, FileName={fileName}, ContentType={contentType}", 
                 fileParameter.ToString());
         }
+
+        [Test]
+        public void VerifyEqualsCasesAndNullableHashCode()
+        {
+            var fileParameter = new FileParameter(null, null, null, null);
+            var fileParameter2 = fileParameter;
+            Assert.IsFalse(fileParameter.Equals(null));
+            Assert.IsTrue(fileParameter.Equals(fileParameter2));
+            Assert.IsFalse(fileParameter.Equals(new object()));
+            Assert.IsTrue(fileParameter.GetHashCode(fileParameter) == 0);
+        }
     }
 }
