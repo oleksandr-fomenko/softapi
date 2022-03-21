@@ -169,6 +169,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 QueryParameters = new Dictionary<string, object>(),
                 FormDataParameters = new Dictionary<string, object>(),
                 Headers = new List<KeyValuePair<string, string>>(),
+                FileParameters = new List<Core.FileParameter>(),
                 Body = default,
                 Deserializer = null,
                 Settings = null
