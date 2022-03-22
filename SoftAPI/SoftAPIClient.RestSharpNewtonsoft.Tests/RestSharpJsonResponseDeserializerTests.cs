@@ -9,10 +9,9 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
         public void WhenIncorrectStringIsProvidedTheDefaultInstanceIsCreated()
         {
             var restSharpJsonResponseDeserializer = new RestSharpJsonResponseDeserializer();
-            var result = restSharpJsonResponseDeserializer.Convert<ResponseTests.UserJsonDto>("incorrect");
 
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOf<ResponseTests.UserJsonDto>(result);
+            var ex = Assert.Throws<Newtonsoft.Json.JsonReaderException>(() => restSharpJsonResponseDeserializer.Convert<ResponseTests.UserJsonDto>("incorrect"));
+            Assert.AreEqual("Unexpected character encountered while parsing value: i. Path '', line 0, position 0.", ex.Message);
         }
 
     }
