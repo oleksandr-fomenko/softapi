@@ -14,21 +14,25 @@ namespace SoftAPIClient.MetaData
         public Dictionary<string, object> QueryParameters { get; set; } = new Dictionary<string, object>();
         public Dictionary<string, object> FormDataParameters { get; set; } = new Dictionary<string, object>();
         public List<KeyValuePair<string, string>> Headers { get; set; } = new List<KeyValuePair<string, string>>();
+        public string BodyName { get; set; }
         public KeyValuePair<BodyType, object> Body { get; set; } = default;
         public IResponseDeserializer Deserializer { get; set; }
         public DynamicRequestSettings Settings { get; set; }
+        public List<FileParameter> FileParameters { get; set; } = new List<FileParameter>();
 
         public bool Equals(Request x, Request y)
         {
             return string.Equals(x.Url, y.Url)
                    && string.Equals(x.Method, y.Method)
                    && string.Equals(x.Path, y.Path)
+                   && string.Equals(x.BodyName, y.BodyName)
                    && x.PathParameters.SequenceEqual(y.PathParameters)
                    && x.QueryParameters.SequenceEqual(y.QueryParameters)
                    && x.FormDataParameters.SequenceEqual(y.FormDataParameters)
                    && x.Headers.SequenceEqual(y.Headers)
                    && x.Body.Equals(y.Body)
-                   && Equals(x.Settings, y.Settings);
+                   && Equals(x.Settings, y.Settings)
+                   && x.FileParameters.SequenceEqual(y.FileParameters);
         }
 
         public override bool Equals(object obj)
@@ -52,12 +56,14 @@ namespace SoftAPIClient.MetaData
                 hashCode = (hashCode * 397) ^ (Method != null ? Method.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Path != null ? Path.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Method != null ? Method.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (BodyName != null ? BodyName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (PathParameters != null ? PathParameters.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (QueryParameters != null ? QueryParameters.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (FormDataParameters != null ? FormDataParameters.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Headers != null ? Headers.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Body.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Settings != null ? Settings.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (FileParameters != null ? FileParameters.GetHashCode() : 0);
                 return hashCode;
             }
         }

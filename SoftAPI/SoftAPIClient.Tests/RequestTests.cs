@@ -21,7 +21,9 @@ namespace SoftAPIClient.Tests
             var queryParameters = new Dictionary<string, object> { { "query_int_key", 1}, { "query_string_key", "string" } };
             var formDataParameters = new Dictionary<string, object> { { "formData_int_key", 1}, { "formData_string_key", "string" } };
             var headers = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("Content-Type", "application/json") };
+            var files = new List<FileParameter> { new FileParameter("testFile", new byte[] { 1, 2, 3 }, "test.jpeg", "image/jpeg") };
             var body = new KeyValuePair<BodyType, object>(BodyType.Json, new UserJsonDto { Age = 15, Name = "Ivan"});
+            const string bodyName = "test";
             IResponseDeserializer deserializer = null;
             var dynamicRequestSettings = new DynamicRequestSettings();
 
@@ -35,8 +37,10 @@ namespace SoftAPIClient.Tests
                 FormDataParameters = formDataParameters,
                 Headers = headers,
                 Body = body,
+                BodyName = bodyName,
                 Deserializer = deserializer,
-                Settings = dynamicRequestSettings
+                Settings = dynamicRequestSettings,
+                FileParameters = files
             };
 
             Assert.AreEqual(url, request.Url);
@@ -47,8 +51,10 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(formDataParameters, request.FormDataParameters);
             Assert.AreEqual(headers, request.Headers);
             Assert.AreEqual(body, request.Body);
+            Assert.AreEqual(bodyName, request.BodyName);
             Assert.AreEqual(deserializer, request.Deserializer);
             Assert.AreEqual(dynamicRequestSettings, request.Settings);
+            Assert.AreEqual(files, request.FileParameters);
             Assert.IsTrue(request.GetHashCode() != 0);
             Assert.IsTrue(request.GetHashCode(new Request()) != 0);
             Assert.IsFalse(request.Equals(new Request()));
@@ -66,7 +72,9 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(Enumerable.Empty<IDictionary<string, object>>(), request.QueryParameters);
             Assert.AreEqual(Enumerable.Empty<IDictionary<string, object>>(), request.FormDataParameters);
             Assert.AreEqual(Enumerable.Empty<IList<KeyValuePair<string, string>>>(), request.Headers);
+            Assert.AreEqual(Enumerable.Empty<IList<FileParameter>>(), request.FileParameters);
             Assert.AreEqual(default(KeyValuePair<BodyType, object>), request.Body);
+            Assert.IsNull(request.BodyName);
             Assert.IsNull(request.Deserializer);
             Assert.IsNull(request.Settings);
             Assert.IsTrue(request.GetHashCode() != 0);
@@ -83,7 +91,9 @@ namespace SoftAPIClient.Tests
                 PathParameters = null,
                 QueryParameters = null,
                 FormDataParameters = null,
-                Headers = null
+                Headers = null,
+                FileParameters = null,
+                BodyName = null
             };
             var request2 = request;
             Assert.IsFalse(request.Equals(null));

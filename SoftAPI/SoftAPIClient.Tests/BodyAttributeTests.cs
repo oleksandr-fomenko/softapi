@@ -11,15 +11,16 @@ namespace SoftAPIClient.Tests
         {
             var bodyAttribute = new BodyAttribute();
             Assert.AreEqual(BodyType.Json, bodyAttribute.BodyType);
-            Assert.IsNull(bodyAttribute.Value);
+            Assert.IsNull(bodyAttribute.Name);
         }
 
         [Test]
         public void VerifyBodyType()
         {
-            var bodyAttribute = new BodyAttribute(BodyType.Xml);
+            const string name = "test";
+            var bodyAttribute = new BodyAttribute(BodyType.Xml, name);
             Assert.AreEqual(BodyType.Xml, bodyAttribute.BodyType);
-            Assert.IsNull(bodyAttribute.Value);
+            Assert.AreEqual(name, bodyAttribute.Name);
         }
     }
 }

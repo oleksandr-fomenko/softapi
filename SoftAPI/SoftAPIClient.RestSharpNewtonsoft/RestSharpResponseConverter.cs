@@ -36,7 +36,10 @@ namespace SoftAPIClient.RestSharpNewtonsoft
             }
 
             var restRequest = new RestRequest(Enum.Parse<Method>(requestObject.Method));
+
             requestObject.Headers.ForEach(h => restRequest.AddHeader(h.Key, h.Value));
+
+            requestObject.FileParameters.ForEach(f => restRequest.AddFile(f.Name, f.Bytes, f.FileName, f.ContentType));
 
             if (requestObject.FormDataParameters.Count != 0)
             {
@@ -83,21 +86,46 @@ namespace SoftAPIClient.RestSharpNewtonsoft
             {
                 return;
             }
-            switch (request.Body.Key)
+
+            if (request.BodyName != null)
             {
-                case BodyType.Json:
-                    var serializedBody = JsonConvert.SerializeObject(requestBody);
-                    restRequest.AddParameter("application/json", serializedBody, ParameterType.RequestBody);
-                    restRequest.AddJsonBody(requestBody);
-                    break;
-                case BodyType.Xml:
-                    restRequest.XmlSerializer = new RestSharp.Serializers.DotNetXmlSerializer();
-                    restRequest.RequestFormat = DataFormat.Xml;
-                    restRequest.AddXmlBody(requestBody);
-                    break;
-                case BodyType.Text:
-                    restRequest.AddParameter("text/plain", requestBody, ParameterType.RequestBody);
-                    break;
+                string contentType = null;
+                object resultBody = null;
+                switch (request.Body.Key)
+                {
+                    case BodyType.Json:
+                        contentType = "application/json";
+                        resultBody = JsonConvert.SerializeObject(requestBody);
+                        break;
+                    case BodyType.Xml:
+                        contentType = "application/xml";
+                        resultBody = new RestSharp.Serializers.DotNetXmlSerializer().Serialize(requestBody);
+                        break;
+                    case BodyType.Text:
+                        contentType = "text/plain";
+                        resultBody = requestBody;
+                        break;
+                }
+                restRequest.AddParameter(request.BodyName, resultBody, contentType, ParameterType.RequestBody);
+            }
+            else
+            {
+                switch (request.Body.Key)
+                {
+                    case BodyType.Json:
+                        var serializedBody = JsonConvert.SerializeObject(requestBody);
+                        restRequest.AddParameter("application/json", serializedBody, ParameterType.RequestBody);
+                        restRequest.AddJsonBody(requestBody);
+                        break;
+                    case BodyType.Xml:
+                        restRequest.XmlSerializer = new RestSharp.Serializers.DotNetXmlSerializer();
+                        restRequest.RequestFormat = DataFormat.Xml;
+                        restRequest.AddXmlBody(requestBody);
+                        break;
+                    case BodyType.Text:
+                        restRequest.AddParameter("text/plain", requestBody, ParameterType.RequestBody);
+                        break;
+                }
             }
         }
 
