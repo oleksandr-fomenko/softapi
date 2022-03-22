@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Newtonsoft.Json;
 using RestSharp;
 using SoftAPIClient.Core.Interfaces;
 using SoftAPIClient.MetaData;
@@ -95,11 +94,11 @@ namespace SoftAPIClient.RestSharpNewtonsoft
                 {
                     case BodyType.Json:
                         contentType = "application/json";
-                        resultBody = JsonConvert.SerializeObject(requestBody);
+                        resultBody = new RestSharpJsonSerializer().Convert(requestBody);
                         break;
                     case BodyType.Xml:
                         contentType = "application/xml";
-                        resultBody = new RestSharp.Serializers.DotNetXmlSerializer().Serialize(requestBody);
+                        resultBody = new RestSharpXmlSerializer().Convert(requestBody);
                         break;
                     case BodyType.Text:
                         contentType = "text/plain";
@@ -113,7 +112,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft
                 switch (request.Body.Key)
                 {
                     case BodyType.Json:
-                        var serializedBody = JsonConvert.SerializeObject(requestBody);
+                        var serializedBody = new RestSharpJsonSerializer().Convert(requestBody);
                         restRequest.AddParameter("application/json", serializedBody, ParameterType.RequestBody);
                         restRequest.AddJsonBody(requestBody);
                         break;
