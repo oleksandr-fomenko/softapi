@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using RestSharp;
@@ -172,5 +173,14 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             var actualParameters = restRequest.Parameters;
             Assert.AreEqual(expectedParameters, actualParameters);
         }
+    }
+
+    [XmlRoot(ElementName = "root")]
+    public class UserXmlDto
+    {
+        [XmlElement(ElementName = "age")]
+        public int Age { get; set; }
+        [XmlElement(ElementName = "name")]
+        public string Name { get; set; }
     }
 }
