@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using RestSharp;
 using SoftAPIClient.MetaData;
@@ -31,7 +30,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             };
             var expectedParameters = new List<Parameter>
             {
-                new Parameter("application/json", JsonConvert.SerializeObject(userObject), ParameterType.RequestBody),
+                new Parameter("application/json", new RestSharpJsonSerializer().Convert(userObject), ParameterType.RequestBody),
                 new JsonParameter("", userObject,"application/json"),
             };
 
@@ -58,7 +57,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             };
             var expectedParameters = new List<Parameter>
             {
-                new Parameter("test_name", JsonConvert.SerializeObject(userObject),"application/json", ParameterType.RequestBody)
+                new Parameter("test_name", new RestSharpJsonSerializer().Convert(userObject),"application/json", ParameterType.RequestBody)
             };
 
             var request = new Request
