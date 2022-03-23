@@ -2,14 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>1.2.1</Version>
-    <Description>An RestSharp + Newtonsoft implementation of the SoftAPIClient</Description>
+	<Authors>Oleksandr Fomenko</Authors>
+	<Company>automation-solutions-set</Company>
+	<Description>An RestSharp + Newtonsoft implementation of the SoftAPIClient</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageTags>HttpClient,WebApi</PackageTags>
     <PackageProjectUrl>https://github.com/automation-solutions-set/softapi</PackageProjectUrl>
     <RepositoryUrl>https://github.com/automation-solutions-set/softapi</RepositoryUrl>
-    <PackageTags>HttpClient,WebApi</PackageTags>
-    <NeutralLanguage>English</NeutralLanguage>
+    <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Version>1.2.1</Version>
     <AssemblyVersion>1.2.1.0</AssemblyVersion>
   </PropertyGroup>
 
