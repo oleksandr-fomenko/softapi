@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using RestSharp;
 using SoftAPIClient.MetaData;
@@ -18,7 +17,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             Age = 23,
             Name = "JsonLad"
         };
-        private static readonly string SerializedBody = JsonConvert.SerializeObject(UserObject);
+        private static readonly string SerializedBody = new RestSharpJsonSerializer().Convert(UserObject);
         private const string Url = "http://localhost:8080";
         private static readonly Uri Uri = new Uri(Url);
         private const HttpStatusCode StatusCode = HttpStatusCode.OK;

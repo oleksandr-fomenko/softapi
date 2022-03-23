@@ -6,7 +6,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
     {
 
         [Test]
-        public void WhenIncorrectStringIsProvidedTheDefaultInstanceIsCreated()
+        public void WhenIncorrectStringIsProvidedJsonReaderExceptionIsThrown()
         {
             var restSharpJsonResponseDeserializer = new RestSharpJsonResponseDeserializer();
 

@@ -2,9 +2,9 @@
 using System.Xml.Serialization;
 using SoftAPIClient.Core.Interfaces;
 
-namespace SoftAPIClient.RestSharpNewtonsoft
+namespace SoftAPIClient.Implementations
 {
-    public class RestSharpXmlResponseDeserializer : IResponseDeserializer
+    public class XmlDeserializer : IResponseDeserializer
     {
         public T Convert<T>(string response)
         {

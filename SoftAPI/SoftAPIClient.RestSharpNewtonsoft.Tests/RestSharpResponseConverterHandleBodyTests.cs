@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Xml.Serialization;
 using NUnit.Framework;
 using RestSharp;
 using SoftAPIClient.MetaData;
@@ -30,7 +30,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             };
             var expectedParameters = new List<Parameter>
             {
-                new Parameter("application/json", JsonConvert.SerializeObject(userObject), ParameterType.RequestBody),
+                new Parameter("application/json", new RestSharpJsonSerializer().Convert(userObject), ParameterType.RequestBody),
                 new JsonParameter("", userObject,"application/json"),
             };
 
@@ -57,7 +57,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             };
             var expectedParameters = new List<Parameter>
             {
-                new Parameter("test_name", JsonConvert.SerializeObject(userObject),"application/json", ParameterType.RequestBody)
+                new Parameter("test_name", new RestSharpJsonSerializer().Convert(userObject),"application/json", ParameterType.RequestBody)
             };
 
             var request = new Request
@@ -172,5 +172,14 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             var actualParameters = restRequest.Parameters;
             Assert.AreEqual(expectedParameters, actualParameters);
         }
+    }
+
+    [XmlRoot(ElementName = "root")]
+    public class UserXmlDto
+    {
+        [XmlElement(ElementName = "age")]
+        public int Age { get; set; }
+        [XmlElement(ElementName = "name")]
+        public string Name { get; set; }
     }
 }

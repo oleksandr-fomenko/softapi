@@ -4,16 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Oleksandr Fomenko</Authors>
     <Company>automation-solutions-set</Company>
-    <PackageLicenseFile></PackageLicenseFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Description>A type-safe REST library</Description>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageTags>HttpClient,WebApi</PackageTags>
     <PackageProjectUrl>https://github.com/automation-solutions-set/softapi</PackageProjectUrl>
     <RepositoryUrl>https://github.com/automation-solutions-set/softapi</RepositoryUrl>
     <NeutralLanguage>en</NeutralLanguage>
-    <Description>A type-safe REST library</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>HttpClient,WebApi</PackageTags>
-    <Version>1.2.1</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.2.2</Version>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
