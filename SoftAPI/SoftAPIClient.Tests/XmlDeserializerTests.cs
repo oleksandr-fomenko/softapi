@@ -1,17 +1,17 @@
 ﻿using System.Xml.Serialization;
 using NUnit.Framework;
+using SoftAPIClient.Implementations;
 
-namespace SoftAPIClient.RestSharpNewtonsoft.Tests
+namespace SoftAPIClient.Tests
 {
-    public class RestSharpXmlResponseDeserializerTests : AbstractTest
+    public class XmlDeserializerTests : AbstractTest
     {
-
         [Test]
         public void WhenValidStringIsProvidedInstanceIsCreated()
         {
             const int age = 15;
             const string name = "Alex";
-            var restSharpXmlResponseDeserializer = new RestSharpXmlResponseDeserializer();
+            var restSharpXmlResponseDeserializer = new XmlDeserializer();
             var result = restSharpXmlResponseDeserializer.Convert<UserXmlDto>("<?xml version=\"1.0\" encoding=\"UTF-8\"?><root><age>" + age + "</age><name>" + name + "</name></root>");
 
             Assert.IsNotNull(result);
@@ -19,7 +19,6 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
             Assert.AreEqual(age, result.Age);
             Assert.AreEqual(name, result.Name);
         }
-
     }
 
     [XmlRoot(ElementName = "root")]
