@@ -11,8 +11,8 @@
     <RepositoryUrl>https://github.com/automation-solutions-set/softapi</RepositoryUrl>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<Version>1.2.1</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
+	<Version>1.2.2</Version>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
