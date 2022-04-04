@@ -47,7 +47,7 @@ namespace SoftAPIClient.Core
         public RestClient AddResponseConvertor(IResponseConverter responseConvertor)
         {
             var key = responseConvertor.GetType();
-            _responseConvertors.TryAdd(key, responseConvertor);
+            _responseConvertors.Add(key, responseConvertor);
             return this;
         }
 

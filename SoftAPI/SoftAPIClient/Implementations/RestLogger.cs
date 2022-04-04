@@ -103,9 +103,9 @@ namespace SoftAPIClient.Implementations
                 message.AppendLine(messageHeader);
                 message.AppendLine();
             }
-            foreach ((var key, object value) in parameters)
+            foreach (var pair in parameters)
             {
-                message.AppendLine(key + "=" + value);
+                message.AppendLine(pair.Key + "=" + pair.Value);
             }
             return message.ToString();
         }
