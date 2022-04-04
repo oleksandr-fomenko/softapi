@@ -7,7 +7,7 @@ namespace SoftAPIClient.Example.Core
 {
     public static class SensitiveDataHandler
     {
-        private const string SplitCharter = "=";
+        private static readonly char SplitCharter = char.Parse("=");
         private static readonly List<string> SensitiveKeys = new List<string>
         {
             "Authorization",
