@@ -17,7 +17,9 @@ namespace SoftAPIClient.Tests
         public void VerifyAttributeValue()
         {
             var authBasic64 = new AuthBasic64("Ivan", "WeakPassword");
-            var (expectedKey, expectedValue) = authBasic64.GetValue();
+            var pair = authBasic64.GetValue();
+            var expectedKey = pair.Key; 
+            var expectedValue = pair.Value;
             Assert.AreEqual("Authorization", expectedKey);
             Assert.AreEqual("Basic SXZhbjpXZWFrUGFzc3dvcmQ=", expectedValue);
         }

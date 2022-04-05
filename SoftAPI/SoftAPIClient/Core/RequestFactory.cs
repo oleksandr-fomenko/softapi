@@ -12,7 +12,7 @@ namespace SoftAPIClient.Core
     public class RequestFactory
     {
         public Type ResponseConverterType => Client.ResponseConverterType;
-        private const string HeaderSeparator = "=";
+        private static readonly char HeaderSeparator = char.Parse("=");
         private Type InterfaceType { get; }
         private MethodInfo MethodInfo { get; }
         private ClientAttribute Client => InterfaceType.GetCustomAttribute<ClientAttribute>();
@@ -46,7 +46,9 @@ namespace SoftAPIClient.Core
                 return new KeyValuePair<BodyType, object>();
             }
 
-            var (attributeData, value) = pairs.FirstOrDefault();
+            var pair = pairs.FirstOrDefault();
+            var attributeData = pair.Key;
+            var value = pair.Value;
             var bodyAttribute = attributeData.GetCustomAttribute<BodyAttribute>();
             bodyName = bodyAttribute.Name;
             return new KeyValuePair<BodyType, object>(bodyAttribute.BodyType, value);
@@ -266,8 +268,8 @@ namespace SoftAPIClient.Core
             {
                 DynamicParameters().ForEach(p =>
                 {
-                    var (key, value) = p.Value.GetValue();
-                    resultUrl = resultUrl.Replace($"{{{key}}}", value);
+                    var pair = p.Value.GetValue();
+                    resultUrl = resultUrl.Replace($"{{{pair.Key}}}", pair.Value);
                 });
             }
 

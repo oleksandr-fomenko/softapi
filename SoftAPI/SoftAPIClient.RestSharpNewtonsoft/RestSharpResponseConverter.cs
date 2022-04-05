@@ -24,17 +24,17 @@ namespace SoftAPIClient.RestSharpNewtonsoft
                 client.UseUrlEncoder(settings.Encoder);
             }
 
-            foreach (var (key, value) in requestObject.PathParameters)
+            foreach (var pair in requestObject.PathParameters)
             {
-                client.AddDefaultUrlSegment(key, value?.ToString());
+                client.AddDefaultUrlSegment(pair.Key, pair.Value?.ToString());
             }
 
-            foreach (var (key, value) in requestObject.QueryParameters)
+            foreach (var pair in requestObject.QueryParameters)
             {
-                client.AddDefaultQueryParameter(key, value?.ToString());
+                client.AddDefaultQueryParameter(pair.Key, pair.Value?.ToString());
             }
 
-            var restRequest = new RestRequest(Enum.Parse<Method>(requestObject.Method));
+            var restRequest = new RestRequest((Method)Enum.Parse(typeof(Method),requestObject.Method));
 
             requestObject.Headers.ForEach(h => restRequest.AddHeader(h.Key, h.Value));
 
@@ -42,9 +42,9 @@ namespace SoftAPIClient.RestSharpNewtonsoft
 
             if (requestObject.FormDataParameters.Count != 0)
             {
-                foreach (var (key, value) in requestObject.FormDataParameters)
+                foreach (var pair in requestObject.FormDataParameters)
                 {
-                    restRequest.AddParameter(key, value);
+                    restRequest.AddParameter(pair.Key, pair.Value);
                 }
             }
 

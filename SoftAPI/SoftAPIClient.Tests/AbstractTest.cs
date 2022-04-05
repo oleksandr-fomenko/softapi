@@ -26,15 +26,19 @@ namespace SoftAPIClient.Tests
 
         protected byte[] SerializeToBytes<T>(T e)
         {
-            using var stream = new MemoryStream();
-            new BinaryFormatter().Serialize(stream, e);
-            return stream.GetBuffer();
+            using (var stream = new MemoryStream())
+            {
+                new BinaryFormatter().Serialize(stream, e);
+                return stream.GetBuffer();
+            }
         }
 
         protected T DeserializeFromBytes<T>(byte[] bytes)
         {
-            using var stream = new MemoryStream(bytes);
-            return (T)new BinaryFormatter().Deserialize(stream);
+            using (var stream = new MemoryStream(bytes))
+            {
+                return (T)new BinaryFormatter().Deserialize(stream);
+            }
         }
     }
 }

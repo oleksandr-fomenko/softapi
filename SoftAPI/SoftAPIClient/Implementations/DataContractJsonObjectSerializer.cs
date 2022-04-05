@@ -11,10 +11,12 @@ namespace SoftAPIClient.Implementations
         {
             var serializer = new DataContractJsonSerializer(obj.GetType());
 
-            using var stream = new MemoryStream();
-            serializer.WriteObject(stream, obj);
-            var bytes = stream.ToArray();
-            return Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+            using (var stream = new MemoryStream())
+            {
+                serializer.WriteObject(stream, obj);
+                var bytes = stream.ToArray();
+                return Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+            }
         }
     }
 }

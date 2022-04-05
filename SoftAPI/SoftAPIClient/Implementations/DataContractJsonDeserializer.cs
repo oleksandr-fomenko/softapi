@@ -16,12 +16,15 @@ namespace SoftAPIClient.Implementations
 
             var serializer = new DataContractJsonSerializer(typeof(T), settings);
 
-            using var stream = new MemoryStream();
-            var bytes = Encoding.UTF8.GetBytes(response);
-            stream.Write(bytes, 0, bytes.Length);
-            stream.Position = 0;
+            using (var stream = new MemoryStream())
+            {
+                var bytes = Encoding.UTF8.GetBytes(response);
+                stream.Write(bytes, 0, bytes.Length);
+                stream.Position = 0;
 
-            return (T)serializer.ReadObject(stream);
+                return (T)serializer.ReadObject(stream);
+            }
+            
         }
     }
 }

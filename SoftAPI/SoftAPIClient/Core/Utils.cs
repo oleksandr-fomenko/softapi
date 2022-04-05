@@ -54,8 +54,10 @@ namespace SoftAPIClient.Core
 
         public static void MergeDictionaries(Dictionary<string, object> result, Dictionary<string, object> input)
         {
-            foreach (var (key, value) in input)
+            foreach (var pair in input)
             {
+                var key = pair.Key;
+                var value = pair.Value;
                 if (!result.ContainsKey(key))
                 {
                     result.Add(key, value);

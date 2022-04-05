@@ -351,7 +351,8 @@ namespace SoftAPIClient.Tests
         [TestCaseSource(nameof(GetTestDataForHandleToStringIfList))]
         public void VerifyHandleToStringIfList(KeyValuePair<object, string> inputData)
         {
-            var (input, expectedResult) = inputData;
+            var input = inputData.Key;
+            var expectedResult = inputData.Value;
 
             var actualResult = Utils.HandleToStringIfList(input);
             Assert.AreEqual(expectedResult, actualResult);
