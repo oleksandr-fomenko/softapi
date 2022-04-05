@@ -16,7 +16,7 @@ namespace SoftAPIClient.Implementations
                 serializer.WriteObject(stream, obj);
                 var bytes = stream.ToArray();
                 return Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-            };
+            }
         }
     }
 }
