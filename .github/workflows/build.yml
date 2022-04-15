@@ -8,7 +8,10 @@ on:
 
 jobs:
   build:
-
+    strategy:
+      matrix:
+        framework: ["net461", "netcoreapp3.1"]
+        
     runs-on: windows-latest
 
     steps:
@@ -46,7 +49,7 @@ jobs:
         dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
     - name: Test
       shell: powershell
-      run: $env:GitHub:Username = "${{ secrets.USER_NAME }}"; $env:GitHub:Token="${{ secrets.USER_TOKEN }}"; dotnet test SoftAPI/SoftAPI.sln --logger "trx;LogFileName=test-results.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: $env:GitHub:Username = "${{ secrets.USER_NAME }}"; $env:GitHub:Token="${{ secrets.USER_TOKEN }}"; dotnet test SoftAPI/SoftAPI.sln --framework ${{ matrix.framework }} --logger "trx;LogFileName=test-results.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Publish unit test-results
       uses: dorny/test-reporter@v1.5.0
       if: success() || failure()
@@ -67,7 +70,7 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.net461.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.net461.opencover.xml,SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.netcoreapp3.1.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.netcoreapp3.1.opencover.xml
+        files: SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.${{ matrix.framework }}.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.${{ matrix.framework }}.opencover.xml
         verbose: true
         fail_ci_if_error: true
         codecov_curl_args: '-g'
@@ -77,6 +80,6 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths=SoftAPI/SoftAPIClient.Tests/TestResults/test-results.trx,SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/TestResults/test-results.trx /d:sonar.cs.opencover.reportsPaths=SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.net461.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.net461.opencover.xml,SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.netcoreapp3.1.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.netcoreapp3.1.opencover.xml
-          dotnet build SoftAPI/SoftAPI.sln
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths=SoftAPI/SoftAPIClient.Tests/TestResults/test-results.trx,SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/TestResults/test-results.trx /d:sonar.cs.opencover.reportsPaths=SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.${{ matrix.framework }}.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.${{ matrix.framework }}.opencover.xml
+          dotnet build SoftAPI/SoftAPI.sln --framework ${{ matrix.framework }}
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
