@@ -7,7 +7,7 @@ A type-safe REST library for .NET Core 3.1+, net461+ with an object-oriented app
 | *SonarCloud* | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=oleksandr-fomenko_softapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=oleksandr-fomenko_softapi) [![Sonar Violations (long format)](https://img.shields.io/sonar/violations/oleksandr-fomenko_softapi?format=long&label=%20&logo=sonarqube&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/dashboard?id=oleksandr-fomenko_softapi) |
 | *CodeCov* | [![codecov](https://codecov.io/gh/oleksandr-fomenko/softapi/branch/master/graph/badge.svg?token=H3P1OT781H)](https://codecov.io/gh/oleksandr-fomenko/softapi)|
 | *FOSSA* | [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fautomation-solutions-set%2Fsoftapi.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fautomation-solutions-set%2Fsoftapi?ref=badge_shield&issueType=license) |
-| *Snyk* | [![](https://avatars.githubusercontent.com/ml/251?s=24)](https://app.snyk.io/org/oleksandr-fomenko/projects) |
+| *Snyk* | [![Known Vulnerabilities](https://snyk.io/test/github/oleksandr-fomenko/softapi/badge.svg)](https://snyk.io/test/github/oleksandr-fomenko/softapi) |
 
 |Nuget Packages | Statistics |
 |-|-|
