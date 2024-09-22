@@ -21,6 +21,7 @@ namespace SoftAPIClient.Example.Tests.GitHub
         private int _columnId; 
 
         [Test]
+        [Ignore("Ignored due to update in GH API")]
         public void VerifyE2EFlowWithRepositoryProjectManagement()
         {
             //Create Project
