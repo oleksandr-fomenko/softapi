@@ -80,6 +80,6 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       shell: powershell
       run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"automation-solutions-set_softapi" /o:"automation-solutions-set" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths=SoftAPI/SoftAPIClient.Tests/TestResults/test-results.trx,SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/TestResults/test-results.trx /d:sonar.cs.opencover.reportsPaths=SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.${{ matrix.framework }}.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.${{ matrix.framework }}.opencover.xml
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"oleksandr-fomenko_softapi" /o:"oleksandr-fomenko" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths=SoftAPI/SoftAPIClient.Tests/TestResults/test-results.trx,SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/TestResults/test-results.trx /d:sonar.cs.opencover.reportsPaths=SoftAPI/SoftAPIClient.RestSharpNewtonsoft.Tests/coverage.${{ matrix.framework }}.opencover.xml,SoftAPI/SoftAPIClient.Tests/coverage.${{ matrix.framework }}.opencover.xml
           dotnet build SoftAPI/SoftAPI.sln --framework ${{ matrix.framework }}
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
