@@ -24,6 +24,7 @@ namespace SoftAPIClient.Tests
             const string responseBodyString = "{\"name\":\"Ivan\",\"age\":18}";
             const int elapsedTime = 1000;
             IResponseDeserializer deserializer = RequestFactoryTests.GetDeserializer();
+            Exception exception = new Exception();
             var response = new Response
             {
                 HttpStatusCode = httpStatusCode,
@@ -35,6 +36,7 @@ namespace SoftAPIClient.Tests
                 OriginalResponse = originalResponse,
                 ResponseBodyString = responseBodyString,
                 ElapsedTime = elapsedTime,
+                Exception = exception,
                 Deserializer = deserializer
             };
 
@@ -48,6 +50,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(responseBodyString, response.ResponseBodyString);
             Assert.AreEqual(elapsedTime, response.ElapsedTime);
             Assert.AreEqual(deserializer, response.Deserializer);
+            Assert.AreEqual(exception, response.Exception);
             Assert.AreEqual(responseBodyString, response.ToString());
             Assert.IsNull(response.GetEntity<UserJsonDto>());
         }
@@ -67,6 +70,7 @@ namespace SoftAPIClient.Tests
             Assert.IsNull(response.ResponseBodyString);
             Assert.AreEqual(0L, response.ElapsedTime);
             Assert.IsNull(response.Deserializer);
+            Assert.IsNull(response.Exception);
             Assert.AreEqual(string.Empty, response.ToString());
             Assert.IsNull(response.GetEntity<UserJsonDto>());
         }
@@ -87,6 +91,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(response.ResponseBodyString, responseGeneric.ResponseBodyString);
             Assert.AreEqual(response.ElapsedTime, responseGeneric.ElapsedTime);
             Assert.AreEqual(response.Deserializer, responseGeneric.Deserializer);
+            Assert.AreEqual(response.Exception, responseGeneric.Exception);
             Assert.IsNull(responseGeneric.Body);
         }
 
@@ -106,6 +111,7 @@ namespace SoftAPIClient.Tests
             Assert.AreEqual(response.ResponseBodyString, responseGeneric2.ResponseBodyString);
             Assert.AreEqual(response.ElapsedTime, responseGeneric2.ElapsedTime);
             Assert.AreEqual(response.Deserializer, responseGeneric2.Deserializer);
+            Assert.AreEqual(response.Exception, responseGeneric2.Exception);
             Assert.IsNull(responseGeneric2.Body);
             Assert.IsNull(responseGeneric2.Body2);
         }
@@ -123,6 +129,7 @@ namespace SoftAPIClient.Tests
                 OriginalResponse = new object(),
                 ResponseBodyString = "{\"name\":\"Ivan\",\"age\":18}",
                 ElapsedTime = 1000,
+                Exception = new Exception(),
                 Deserializer = null
             };
         }

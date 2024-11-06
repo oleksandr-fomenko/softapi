@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SoftAPIClient.Core.Interfaces;
 
 namespace SoftAPIClient.MetaData
@@ -15,6 +16,7 @@ namespace SoftAPIClient.MetaData
         public string ResponseBodyString { get; set; }
         public long ElapsedTime { get; set; }
         public IResponseDeserializer Deserializer { get; set; }
+        public Exception Exception { get; set; }
         public T GetEntity<T>()
         {
             return Deserializer != null ? Deserializer.Convert<T>(ResponseBodyString) : default;

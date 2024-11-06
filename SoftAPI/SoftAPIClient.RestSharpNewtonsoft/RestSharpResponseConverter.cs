@@ -73,6 +73,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft
                 OriginalResponse = response,
                 ResponseBodyString = response.Content,
                 ElapsedTime = stopWatch.ElapsedMilliseconds,
+                Exception = response.ErrorException,
                 Deserializer = deserializer
             };
             return result;

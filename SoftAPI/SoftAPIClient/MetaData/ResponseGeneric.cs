@@ -14,6 +14,7 @@
             ResponseBodyString = response.ResponseBodyString;
             ElapsedTime = response.ElapsedTime;
             Deserializer = response.Deserializer;
+            Exception = response.Exception;
         }
         public T Body => Deserializer != null ? Deserializer.Convert<T>(ResponseBodyString) : default;
     }

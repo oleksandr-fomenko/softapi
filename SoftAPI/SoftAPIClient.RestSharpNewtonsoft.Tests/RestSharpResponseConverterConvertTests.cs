@@ -48,6 +48,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
         {
             Encoder = s => s
         };
+        private static readonly Exception exception = new Exception();
 
         private RestResponse _restResponse;
 
@@ -118,6 +119,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 StatusCode = StatusCode,
                 ResponseUri = Uri,
                 ContentType = ContentType,
+                ErrorException = exception,
                 Content = SerializedBody
             };
             SetInternalProps(restResponse, headersRestRequest, cookiesRestRequest);
@@ -145,6 +147,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 OriginalRequest = request,
                 OriginalResponse = restResponse,
                 ResponseBodyString = SerializedBody,
+                Exception = exception,
                 Deserializer = Deserializer
             };
 
@@ -156,6 +159,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 StatusCode = StatusCode,
                 ResponseUri = Uri,
                 ContentType = ContentType,
+                ErrorException = null,
                 Content = null
             };
             SetInternalProps(restResponse);
@@ -183,6 +187,7 @@ namespace SoftAPIClient.RestSharpNewtonsoft.Tests
                 OriginalRequest = request,
                 OriginalResponse = restResponse,
                 ResponseBodyString = string.Empty,
+                Exception = null,
                 Deserializer = null
             };
 
